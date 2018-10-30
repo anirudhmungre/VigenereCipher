@@ -12,7 +12,9 @@ body {
     font-family: "Roboto", sans-serif;
     width: 100%;
     display: grid;
+    grid-gap: 3em;
     grid-template-areas: "header" "content";
+    background: #ececec;
 }
 
 #header {
@@ -58,5 +60,24 @@ body {
 
 #content {
     grid-area: content;
+    width: calc(100% - 6em);
+    padding-left: 3em;
+    padding-right: 3em;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#content-wrapper {
     width: 100%;
+    max-width: 1000px;
+    height: 300px;
+}
+
+#card {
+    background: white;
+    box-shadow: 0 0 15px 1px rgba(0,0,0,0.5);
+    padding: 3em;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
 }
