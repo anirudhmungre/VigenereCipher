@@ -3,4 +3,15 @@ html
         title= title
         link(rel='stylesheet', href='/stylesheets/style.css')
     body
-        block content
+        #header 
+            #title
+                a(href="/")
+                    h1 Vigenere Cipher
+            #menu
+                a(href="/encrypt").menu-item Encrypt
+                a(href="/decrypt-bruteforce").menu-item Brute Force
+                a(href="/decrypt-pso").menu-item PSO
+        #content
+            #content-wrapper
+                #card
+                    block content
