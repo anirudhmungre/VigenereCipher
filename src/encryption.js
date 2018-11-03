@@ -1,6 +1,6 @@
 "use strict"
 
-function enc(ptxt, key){
+exports.enc = function(ptxt, key){
     let etxt = ""
     for (let i = 0 ; i < ptxt.length ; i++){
         // console.log(ptxt.charCodeAt(i))

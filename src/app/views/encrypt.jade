@@ -2,3 +2,35 @@ extends layout
 
 block content
     h1 Encrypt
+    form(id="fileUpload", encType="multipart/form-data")
+        input(type="radio", name="inputMethod", value="File")
+        span File
+        br
+        input(type="radio", name="inputMethod", value="String")
+        span Input
+        br
+        fieldset
+            legend File
+            input(type="file", name="strFile")
+        br
+        br
+        fieldset
+            legend Input
+            textarea(name="", cols="50", rows="10")
+        br
+        input(type="text", name="key", placeholder="please input key")
+        br
+        input(type="submit")
+    script.
+        function handleForm(e) {
+            if (e.preventDefault) e.preventDefault()
+            console.log(e)
+            return false
+        }
+
+        let frm = document.querySelector("#fileUpload")
+        if (frm.attachEvent) {
+            frm.attachEvent("submit", handleForm)
+        } else {
+            frm.addEventListener("submit", handleForm)
+        }

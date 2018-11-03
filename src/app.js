@@ -11,13 +11,21 @@ const os = require("os")
 const http = require("http").Server(app)
 const fs = require("fs")
 
+
+// Local requires
+const encrypt = require('./encryption')
+
+String.prototype.strip = function() {
+  return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
+}
+
 // Server setup
 app.use(fileUpload())
 app.use(express.static(path.join(__dirname, "app", "public")))
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.set("views", path.join(__dirname, "app", "views"))
 app.set("view engine", "jade")
-app.use(logger('dev'))
+// app.use(logger('dev'))
 app.use(bodyParser.json({ limit: '512mb' }))
 app.use(bodyParser.urlencoded({ limit: '512mb', extended: true }))
 app.set("port", PORT)
@@ -39,11 +47,18 @@ app.get("/encrypt", (req, res) => {
 })
 
 app.post("/do-encrypt", (req, res) => {
-  if (Object.keys(req.files).length == 0) { res.json({"ERROR":"No File Uploaded..."}) }
-  let fileData = req.files.strFile.data
-  console.log(fileData)
+  console.log(req.body)
+  if (Object.keys(req.files).length == 0) { 
+    res.json({"ERROR":"No File Uploaded..."}) 
+  }
+  let fileData = req.files.strFile.data.toString("utf-8").strip()
+  let key = req.body.key.strip()
   //Do the encryption
-  res.json({"encrypted":""})
+  let encrypted = encrypt.enc(fileData, key)
+  res.json({
+    "raw": fileData, 
+    "enc": encrypted
+  })
 })
 
 app.get("/decrypt-bruteforce", (req, res) => {
