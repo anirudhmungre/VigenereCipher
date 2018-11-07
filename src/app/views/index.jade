@@ -1,4 +1,9 @@
 extends layout
 
 block content
-    h1 Home
+    #card
+        h1.heading Home
+        #inline-menu
+            a.inline-menu-item(href="/encrypt") Encrypt
+            a.inline-menu-item(href="/decrypt-bruteforce") Decrypt with Brute Force
+            a.inline-menu-item(href="/decrypt-pso") Decrypt with PSO

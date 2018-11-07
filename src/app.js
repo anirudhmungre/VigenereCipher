@@ -42,32 +42,44 @@ app.get("/", (req, res) => {
 
 app.get("/encrypt", (req, res) => {
   res.render("encrypt", {
-    title: "Encrypt String"
+    title: "Encrypt String or File"
+  })
+})
+
+app.get("/decrypt", (req, res) => {
+  res.render("decrypt", {
+    title: "Decrypt knowing key"
   })
 })
 
 app.post("/do-encrypt", (req, res) => {
-  console.log(req.body)
   if (req.body.inputMethod) {
     let dataToEncrypt = ""
     if (req.body.inputMethod === 'file') {
       if (Object.keys(req.files).length == 0) { 
-        res.json({"ERROR":"No File Uploaded..."}) 
+        return res.json({"ERROR":"No File Uploaded..."}) 
       } else {
         dataToEncrypt = req.files.strFile.data.toString("utf-8").strip()
       }
     } else if (req.body.inputMethod === 'string') {
       dataToEncrypt = req.body.strString.strip()
+    } else {
+      return res.json({"ERROR":"Invalid request... You shouldn't be able to do this!"})  
     }
-    let encrypted = encrypt.enc(dataToEncrypt, req.body.key.strip())
-    res.json({
+    let key = req.body.key.strip()
+    let start_time = new Date().getTime()
+    let encrypted = encrypt.enc(dataToEncrypt, key)
+    let runtime = (new Date().getTime()) - start_time
+    return res.json({
       "raw": dataToEncrypt, 
-      "enc": encrypted
+      "enc": encrypted,
+      "key": key,
+      "runtime": runtime
     })
   } else {
-    res.json({"ERROR":"Invalid request."}) 
+    // Something has gone VERY wrong if this happens...
+    return res.json({"ERROR":"Invalid request... You shouldn't be able to do this!"}) 
   }
-  
 })
 
 app.get("/decrypt-bruteforce", (req, res) => {
