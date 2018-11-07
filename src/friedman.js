@@ -11,7 +11,7 @@ function occurrences(etxt){
     }
     return arr
 }
-function friedman(etxt){
+exports.friedman = function(etxt){
     let fried, ko, kr, kp
     let sum = 0
     let occur = occurrences(etxt)
@@ -29,5 +29,3 @@ function friedman(etxt){
     fried = (kp-kr)/(ko-kr)
     return fried
 }
-let etxt = "VHXTEPCSMYOVCBLKNFADHPG"
-console.log(friedman(etxt))
