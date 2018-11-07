@@ -11,7 +11,7 @@ function occurrences(etxt){
     }
     return arr
 }
-exports.friedman = function(etxt){
+exports.fried = function(etxt){
     let fried, ko, kr, kp
     let sum = 0
     let occur = occurrences(etxt)
