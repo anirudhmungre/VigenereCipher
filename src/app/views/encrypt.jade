@@ -2,35 +2,29 @@ extends layout
 
 block content
     h1 Encrypt
-    form(id="fileUpload", encType="multipart/form-data")
-        input(type="radio", name="inputMethod", value="File")
-        span File
-        br
-        input(type="radio", name="inputMethod", value="String")
-        span Input
-        br
-        fieldset
-            legend File
+    form(id="fileUpload", method="POST", action="/do-encrypt", encType="multipart/form-data")
+        #select-type.box
+            label(id="file-input-radio", class="radio-container") File
+                input(type="radio" checked name="inputMethod", value="file")
+                span(class="checkmark")
+            label(id="string-input-radio", class="radio-container") String
+                input(type="radio" name="inputMethod", value="string")
+                span(class="checkmark")
+        #file-input.box(style="display:block;")
             input(type="file", name="strFile")
-        br
-        br
-        fieldset
-            legend Input
-            textarea(name="", cols="50", rows="10")
-        br
-        input(type="text", name="key", placeholder="please input key")
-        br
+        #string-input.box(style="display:none;")
+            textarea(name="strString", cols="50", rows="10")
+        #key-input.box
+            input(type="text", name="key", placeholder="please input key")
         input(type="submit")
     script.
-        function handleForm(e) {
-            if (e.preventDefault) e.preventDefault()
-            console.log(e)
-            return false
-        }
-
-        let frm = document.querySelector("#fileUpload")
-        if (frm.attachEvent) {
-            frm.attachEvent("submit", handleForm)
-        } else {
-            frm.addEventListener("submit", handleForm)
-        }
+        $('input[type=radio][name=inputMethod]').change(function() {
+            if (this.value == 'file') {
+                $("#file-input").css({"display":"block"})
+                $("#string-input").css({"display":"none"})
+            }
+            else if (this.value == 'string') {
+                $("#file-input").css({"display":"none"})
+                $("#string-input").css({"display":"block"})
+            }
+        })
