@@ -1,7 +1,8 @@
 html
     head
-        title= title
+        title VIGCIP | #{title}
         link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src="https://code.jquery.com/jquery-3.3.1.min.js", integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=", crossorigin="anonymous")
     body
         #header 
             #title
@@ -9,9 +10,9 @@ html
                     h1 Vigenere Cipher
             #menu
                 a(href="/encrypt").menu-item Encrypt
-                a(href="/decrypt-bruteforce").menu-item Brute Force
-                a(href="/decrypt-pso").menu-item PSO
+                a(href="/decrypt").menu-item Decrypt
+                a(href="/decrypt-bruteforce").menu-item Brute Force Crack
+                a(href="/decrypt-pso").menu-item PSO Crack
         #content
             #content-wrapper
-                #card
-                    block content
+                block content

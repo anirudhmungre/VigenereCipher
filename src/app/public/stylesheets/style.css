@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,300i,400,400i,500,500i,700,700i');
+
 * {
     margin:0;
     padding:0;
@@ -8,8 +10,18 @@ a {
     text-decoration: none;
 }
 
+h1 {
+    font-weight: 300;
+    font-size: 2.2em;
+}
+
+.heading {
+    padding-bottom: 0.5em;
+}
+
 body {
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
     width: 100%;
     display: grid;
     grid-gap: 3em;
@@ -28,6 +40,9 @@ body {
     grid-template-areas: "title menu";
     grid-template-columns: 1fr 1fr;
     padding-left: 2em;
+    position: sticky;
+    top:0;
+    z-index: 10000;
 }
 
 #title {
@@ -50,6 +65,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center; 
+    text-align: center;
     padding: 0 2em;
     transition: all 0.3s;
 }
@@ -80,4 +96,175 @@ body {
     padding: 3em;
     border-radius: 4px;
     border: 1px solid #cccccc;
+    margin-bottom: 3em;
+}
+
+.box {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+#inline-menu {
+    display: grid;
+    grid-template-columns: "a b c";
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 1em;
+}
+.inline-menu-item {
+    background: #0077CA;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    text-align: center;
+    padding: 2em;
+    transition: all 0.3s; 
+}
+.inline-menu-item:hover {
+    background: #01538d;
+}
+
+#select-type {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+#select-type > * {
+    margin-right: 1em;
+}
+
+/*Styling for Radio Buttons*/
+.radio-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.radio-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #dddddd;
+    border-radius: 50%;
+}
+
+.radio-container:hover input ~ .checkmark {
+    background-color: #aaaaaa;
+}
+
+.radio-container input:checked ~ .checkmark {
+    background-color: #0077CA;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.radio-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.radio-container .checkmark:after {
+ 	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
+}
+
+/*Styling for general inputs*/
+input, textarea { /* This ones for you, Google */
+    border-radius: 4px;
+}
+
+input:disabled, textarea:disabled {
+    background: #aaaaaa;
+}
+
+input[type=text], input[type=password], textarea, input[type="file"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+/*Styling for buttons*/
+
+/* Set a style for all buttons */
+button, input[type="submit"], .button {
+    background-color: #0077CA;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Add a hover effect for buttons */
+button:hover, input[type="submit"]:hover, .button:hover {
+    opacity: 0.8;
+}
+
+/*Styling for snackbar*/
+
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+
+#snackbar.show {
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+/*Snackbar animations*/
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
 }
