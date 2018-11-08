@@ -3,6 +3,7 @@ var router = express.Router()
 
 // Local requires
 const { encrypt } = require('../encryption')
+const { decrypt } = require('../decryption')
 
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
@@ -40,6 +41,42 @@ router.post("/do-encrypt", (req, res) => {
         return res.json({
             "raw": dataToEncrypt,
             "enc": encrypted,
+            "key": key,
+            "runtime": runtime
+        })
+    } else {
+        // Something has gone VERY wrong if this happens...
+        return res.json({
+            "ERROR": "Invalid request... You shouldn't be able to do this!"
+        })
+    }
+})
+
+router.post("/do-decrypt", (req, res) => {
+    if (req.body.inputMethod) {
+        let dataToDecrypt = ""
+        if (req.body.inputMethod === 'file') {
+            if (Object.keys(req.files).length == 0) {
+                return res.json({
+                    "ERROR": "No File Uploaded..."
+                })
+            } else {
+                dataToDecrypt = req.files.strFile.data.toString("utf-8").strip()
+            }
+        } else if (req.body.inputMethod === 'string') {
+            dataToDecrypt = req.body.strString.strip()
+        } else {
+            return res.json({
+                "ERROR": "Invalid request... You shouldn't be able to do this!"
+            })
+        }
+        let key = req.body.key.strip()
+        let start_time = new Date().getTime()
+        let decrypted = decrypt(dataToDecrypt, key)
+        let runtime = (new Date().getTime()) - start_time
+        return res.json({
+            "raw": dataToDecrypt,
+            "dec": decrypted,
             "key": key,
             "runtime": runtime
         })

@@ -51,7 +51,6 @@ block content
                 cache: false,
                 timeout: 600000,
                 success: function (res) {
-                    console.log(res);
                     $("#card.enc-result").fadeIn(200)
                     $("#form-submit").prop("disabled", false)
                     $("textarea#result-enc").val(res.enc)
