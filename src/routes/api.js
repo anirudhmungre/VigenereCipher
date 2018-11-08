@@ -4,7 +4,9 @@ var router = express.Router()
 // Local requires
 const { encrypt } = require('../encryption')
 const { decrypt } = require('../decryption')
-const { bfdecrypt } = require('../bfdecrypt')
+// const { bfdecrypt } = require('../bfdecrypt')
+
+const { fried } = require('../friedman')
 
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
@@ -14,6 +16,16 @@ router.get("/", (req, res) => {
     return res.json({
         "response": 200,
         "message": "Welcome to the home page of the API!"
+    })
+})
+
+router.get("/fried/:text", (req, res) => {
+    let txt = req.params.text
+    let fr = fried(txt)
+    return res.json({
+        "response": 200,
+        "fried": fr,
+        "text": txt
     })
 })
 
@@ -144,17 +156,17 @@ router.post("/do-decrypt-pso", (req, res) => {
                 "ERROR": "Invalid request... You shouldn't be able to do this!"
             })
         }
+        return res.json({})
+        // let start_time = new Date().getTime()
+        // // let { decrypted, key } = bfdecrypt(dataToDecrypt)
+        // let runtime = (new Date().getTime()) - start_time
 
-        let start_time = new Date().getTime()
-        let { decrypted, key } = bfdecrypt(dataToDecrypt)
-        let runtime = (new Date().getTime()) - start_time
-
-        return res.json({
-            "raw": dataToDecrypt,
-            "dec": decrypted,
-            "key": key,
-            "runtime": runtime
-        })
+        // return res.json({
+        //     "raw": dataToDecrypt,
+        //     "dec": decrypted,
+        //     "key": key,
+        //     "runtime": runtime
+        // })
     } else {
         // Something has gone VERY wrong if this happens...
         return res.json({
