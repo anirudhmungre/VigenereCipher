@@ -1,5 +1,63 @@
 extends layout
 
 block content
-    #card
+    #card.enc-form
         h1.heading Decrypt Brute Force
+        form#fileUpload(method="POST", action="/do-decrypt-brute", encType="multipart/form-data")
+            #select-type.box
+                label(id="file-input-radio", class="radio-container") File
+                    input(type="radio" checked name="inputMethod", value="file")
+                    span(class="checkmark")
+                label(id="string-input-radio", class="radio-container") String
+                    input(type="radio" name="inputMethod", value="string")
+                    span(class="checkmark")
+            #file-input.box(style="display:block;")
+                input(type="file", name="strFile", accept=".txt")
+            #string-input.box(style="display:none;")
+                textarea(name="strString", cols="50", rows="10")
+            input#form-submit(type="submit", value="Decrypt!")
+    #card.enc-result(style="display:none;")
+        h1 Result
+        label(for="result-dec") Decrypted String
+        textarea#result-dec(name="result-dec", placeholder="decrypted string")
+        label(for="result-key") Guessed Key
+        input#result-key(name="result-key", type="text", placeholder="key")
+    script.
+        $('input[type=radio][name=inputMethod]').change(function() {
+            if (this.value == 'file') {
+                $("#file-input").css({"display":"block"})
+                $("#string-input").css({"display":"none"})
+            }
+            else if (this.value == 'string') {
+                $("#file-input").css({"display":"none"})
+                $("#string-input").css({"display":"block"})
+            }
+        })
+        $("#fileUpload").submit(function(e) {
+            e.preventDefault()
+            let form = $("#fileUpload")[0]
+            let formData = new FormData(form)
+
+            $("#form-submit").prop("disabled", true);
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/api/do-decrypt-brute",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: (res) => {
+                    $("#card.enc-result").fadeIn(200)
+                    $("#form-submit").prop("disabled", false)
+                    $("textarea#result-dec").val(res.dec)
+                    $("input#result-key").val(res.key)
+                },
+                error: (e) => {
+                    console.log("ERROR : ", e)
+                    $("#form-submit").prop("disabled", false)
+                }
+            })
+        });
+
