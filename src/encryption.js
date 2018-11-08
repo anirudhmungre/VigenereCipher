@@ -1,6 +1,6 @@
 "use strict"
 // Function used to encrypt plaintext file using the provided key
-exports.enc = function(ptxt, key){
+function encrypt(ptxt, key){
     //Create a variable responsible for storing the encrypted text
     let etxt = ""
     //Parse through the plaintext
@@ -12,3 +12,5 @@ exports.enc = function(ptxt, key){
     //Function returns encrypted text
     return etxt
 }
+
+exports.encrypt = encrypt
