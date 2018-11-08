@@ -13,7 +13,7 @@ function posOccur (etxt, kLen){
     return occur
 }
 
-exports.frequency = function(etxt, kLen){
+function frequency(etxt, kLen){
     let freq
     freq = posOccur(etxt, kLen)
     for (let i = 0 ; i < 26 ; i++){
@@ -21,3 +21,5 @@ exports.frequency = function(etxt, kLen){
     }
     return freq
 }
+
+exports.frequency = frequency
