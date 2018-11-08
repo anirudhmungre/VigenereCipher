@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router()
 
 // Local requires
-const encrypt = require('../encryption')
+const { encrypt } = require('../encryption')
 
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
@@ -35,7 +35,7 @@ router.post("/do-encrypt", (req, res) => {
         }
         let key = req.body.key.strip()
         let start_time = new Date().getTime()
-        let encrypted = encrypt.enc(dataToEncrypt, key)
+        let encrypted = encrypt(dataToEncrypt, key)
         let runtime = (new Date().getTime()) - start_time
         return res.json({
             "raw": dataToEncrypt,
