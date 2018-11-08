@@ -1,3 +1,5 @@
+"use strict"
+
 function maketrix(etxt, kLen){
     let matrix = Array(27).fill().map(() => (Array(kLen).fill(0)))
     return matrix
