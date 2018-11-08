@@ -19,7 +19,7 @@ function frequency(etxt, kLen){
     for (let i = 0 ; i < 26 ; i++){
         freq[i] = freq[i].map((x, index) => {return x/freq[26][index]})
     }
-    return freq
+    return freq.slice(0, 26)
 }
 
 exports.frequency = frequency
