@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
 })
 
 router.get("/fried/:text", (req, res) => {
-    let txt = req.params.text
+    let txt = req.params.text.strip()
     let fr = fried(txt)
     return res.json({
         "response": 200,
