@@ -8,6 +8,3 @@ function readFrequency() {
     //Return the frequency array
     return arrFreq
 }
-
-console.log(readFrequency())
-

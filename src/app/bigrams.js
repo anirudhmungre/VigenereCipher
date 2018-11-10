@@ -44,6 +44,3 @@ function findBigramSum (dtxt, w) {
     }
     console.log(sum)
 }
-
-findBigramSum("thheineran", .77)
-findBigramSum("kmspdpvnqohjfxaqmcgeihaumvl", .77)

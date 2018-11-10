@@ -14,5 +14,3 @@ function generateParticles(numParticles, keySize) {
     }
     return particles
 }
-
-console.log(generateParticles(20, 5)[1])
