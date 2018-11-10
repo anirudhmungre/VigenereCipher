@@ -43,4 +43,4 @@ function bruteForce(etxt) {
 console.log(bruteForce(etxt))
 
 
-exports bruteForce = bruteForce
+exports.bruteForce = bruteForce
