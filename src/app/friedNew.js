@@ -32,10 +32,7 @@ function buildCoset(index, etxt, keyLength) {
 
 function compareAvgIC (avgIC, eKey) {
     let icEnglish = 0.0686
-    if (avgIC > icEnglish) {
-        return eKey
-    }
-    else if (Math.abs(icEnglish - avgIC) < 0.013) {
+    if (Math.abs(icEnglish - avgIC) < 0.0095) {
         return eKey
     }
     return -1
@@ -43,11 +40,11 @@ function compareAvgIC (avgIC, eKey) {
 
 function getEstKeyLen(etxt) {
     let eKeyLen = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < etxt.length; i++) {
         if (compareAvgIC(calcAvgIC(i, etxt), i) != -1) {
+            console.log(calcAvgIC(i, etxt))
             eKeyLen.push(i)
         }
     }
     return eKeyLen
 }
-console.log(getEstKeyLen("VVQGYTVVVKALURWFHQACMMVLEHUCATWFHHIPLXHVUWSCIGINCMUHNHQRMSUIMHWZODXTNAEKVVQGYTVVQPHXINWCABASYYMTKSZRCXWRPRFWYHXYGFIPSBWKQAMZYBXJQQABJEMTCHQSNAEKVVQGYTVVPCAQPBSLURQUCVMVPQUTMMLVHWDHNFIKJCPXMYEIOCDTXBJWKQGAN"))

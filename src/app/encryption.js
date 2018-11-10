@@ -11,5 +11,3 @@ function encrypt(ptxt, key){
     //Function returns encrypted text
     return etxt
 }
-
-exports.encrypt = encrypt
