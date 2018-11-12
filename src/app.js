@@ -8,8 +8,8 @@ const helmet = require('helmet')
 const fileUpload = require('express-fileupload')
 const http = require("http").Server(app)
 
-const index = require('./routes/index')
-const api = require('./routes/api')
+const index = require('./app/routes/index')
+const api = require('./app/routes/api')
 
 // Server setup
 app.use(fileUpload())

@@ -6,7 +6,7 @@ const { encrypt } = require('../encryption')
 const { decrypt } = require('../decryption')
 // const { bfdecrypt } = require('../bfdecrypt')
 
-const { fried } = require('../friedman')
+const { fried } = require('../friedNew')
 
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
