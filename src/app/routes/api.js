@@ -8,7 +8,7 @@ const {
 const {
     decrypt
 } = require('../decryption')
-// const { bfdecrypt } = require('../bfdecrypt')
+const { bfdecrypt } = require('../bruteForce')
 
 const {
     fried
