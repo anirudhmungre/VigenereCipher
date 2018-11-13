@@ -2,16 +2,18 @@
 
 function calcIC(index, coset) {
     let sum = 0,
-    ic = 0,
-    N = coset[26]
-    for (let i = 0; i < (coset.length - 1); i++) { sum += coset[i] * (coset[i] - 1) }
+        ic = 0,
+        N = coset[26]
+    for (let i = 0; i < (coset.length - 1); i++) {
+        sum += coset[i] * (coset[i] - 1)
+    }
     ic = sum / (N * (N - 1))
     return sum / (N * (N - 1))
 }
 
 function calcAvgIC(eKeyLength, etxt) {
     let sum = 0,
-    avgIc = 0
+        avgIc = 0
     for (let i = 1; i < (eKeyLength + 1); i++) {
         sum += calcIC(i, buildCoset(i, etxt, eKeyLength))
     }
@@ -30,7 +32,7 @@ function buildCoset(index, etxt, keyLength) {
     return arr
 }
 
-function compareAvgIC (avgIC, eKey) {
+function compareAvgIC(avgIC, eKey) {
     let icEnglish = 0.0686
     if (avgIC > 0.05) {
         return eKey
