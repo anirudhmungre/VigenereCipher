@@ -47,28 +47,36 @@ function updateGBest(particleLst, gBestNew) {
 
 function psoMain (etxt, numParticles) {
     let particleLst = particles.generateParticles(numParticles, friedman.getEstKeyLen(etxt)[0]),
-    encryptedFitness = findFitness(etxt)
+    encryptedFitness = findFitness(etxt),
+    gBestFitness = 100,
+    gBestKey = ""
     console.log(encryptedFitness)
     console.log(findFitness("HELLOWORLDTHISISASMALLSTRINGTHATWILLBEENCRYPTEDFORTHEPURPOSESOFTHISTESTCASEWEWILLBEOBSERVINGTHEUSEOFFRIEDMANTOSEEIFTHEKEYLENGTHCOMESBACKCORRECTLYWENEEDTOADDMORECHARACTERSFORTHEPURPOSESOFTHISTESTINGSOTHATTHEALGORITHMCOMESBACKMOREEFFECTIVELY"))
+    
+    
     // First run: Initializing the global best
     let particle = particleLst[0],
     dtxt = decrypt.decrypt(etxt, particle.x.join(""))
     particle.fitness = findFitness(dtxt)
     updateGBest(particleLst, particle)
+    gBestFitness = findFitness(dtxt)
 
     let counter = 0
     while ( /* ((pgBest.fitness - encryptedFitness) < 3.5) || */ counter < 1000) {
         for (let j = 0; j < particleLst.length; j++) {
             let particle = particleLst[j],
-            dtxt = ""
+            dtxt = "",
+            fitness
             
             dtxt = decrypt.decrypt(etxt, particle.x.join(""))
-            particle.fitness = findFitness(dtxt)
+            fitness = findFitness(dtxt)
             
             //console.log(particle.fitness, bstFitVal)
            
-            if (particle.fitness < particle.gBest.fitness) {
-                console.log(particle.fitness, particle.gBest.fitness)
+            if ((fitness * 1000) < (gBestFitness * 1000)) {
+                console.log(fitness, gBestFitness)
+                gBestKey = particle.x.join("")
+                gBestFitness = fitness
                 updateGBest(particleLst, particle)
             }
             if (particle.fitness < findFitness(decrypt.decrypt(etxt, particle.pBest.join("")))) {
@@ -78,7 +86,7 @@ function psoMain (etxt, numParticles) {
             updateVelocity(particle)
             updatePosition(particle)
         }
-        console.log(particle.gBest.x, particle.gBest.fitness)
+        console.log(gBestKey, gBestFitness)
         ++counter
     }
 
