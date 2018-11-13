@@ -13,9 +13,9 @@ function findMonograms (dtxt) {
 }
 
 function findFrequencies (dtxt) {
-    arr = findMonograms(dtxt)
+    let arr = findMonograms(dtxt)
     for (let i = 0; i < arr.length - 1; i++) {
-        arr[i] /= arr[27]
+        arr[i] /= arr[26]
     }
     return arr
 }
@@ -23,16 +23,26 @@ function findFrequencies (dtxt) {
 function readFrequency() {
     const fs = require("fs")
     let arrFreq = fs.readFileSync("./CharOccurences.txt", "UTF-8").split('\n')
+    for (let i = 0; i < arrFreq.length; i++) {
+        arrFreq[i] = Number(arrFreq[i])/100
+    }
     return arrFreq
 }
 
-function findMonogramSum (w) {
+function findMonogramSum (dtxt, w) {
     let mFrequencies = findFrequencies(dtxt),
     sFrequencies = readFrequency(),
     sum = 0
-    for (let i = 0; i < mFrequencies.length; i++) {
-        sum += w * (sFrequencies[i] - mFrequencies[i])
+
+    for (let i = 0; i < mFrequencies.length - 1; i++) {
+        if(mFrequencies[i] != 0) {
+            sum += Math.abs((sFrequencies[i] - mFrequencies[i]))
+        }
     }
+    sum *= w
     return sum
 }
 
+//findMonogramSum("THECATISINHEHOUSE", .23)
+
+exports.findMonogramSum = findMonogramSum

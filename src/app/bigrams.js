@@ -5,17 +5,16 @@ function findBigrams (dtxt) {
     for (let i = 0; i < (dtxt.length -1 ); i++) {
         arrBigrams.push(dtxt.substr(i, 2))
     }
-    console.log(arrBigrams)
     return arrBigrams
 }
 
 function buildTopOccurences() {
     const fs = require('fs')
-    let arrFreq = fs.readFileSync('./bigramFrequency.txt', 'UTF-8').split('\n').map(function(sp){ return sp.split(',')})
+    let arrFreq = fs.readFileSync('./tst.txt', 'UTF-8').split('\n').map(function(sp){ return sp.split(' ')})
     let tOccurences = {}
     for (let i = 0; i < arrFreq.length; i++) {
         if (!tOccurences[ arrFreq[i][0] ]) {
-            tOccurences[ arrFreq[i][0]] = Number(arrFreq[i][1])
+            tOccurences[ arrFreq[i][0]] = (Number(arrFreq[i][1]) / 4324127906)
         }
     }
     return tOccurences
@@ -24,23 +23,31 @@ function buildTopOccurences() {
 function findBigramSum (dtxt, w) {
     let bigrams = findBigrams(dtxt),
     mOccurences = {},
-    bg = 0,
-    numEntries = 0
+    numEntries = 0,
+    tOccurences = buildTopOccurences(),
+    sum = 0
 
     for (let i = 0; i < bigrams.length; i++) {
         if (!mOccurences[ bigrams[i] ]) {
-            ++numEntries
             mOccurences[ bigrams[i] ] = 0
         }
         ++mOccurences[ bigrams[i] ]
+        ++numEntries
     }
-    let tOccurences = buildTopOccurences(),
-    sum = 0
-    for (let j of Object.keys(mOccurences)) {
-        if (tOccurences[j]) {
-            console.log(tOccurences[j], mOccurences[j]/numEntries)
-            sum += w * (tOccurences[j] - (mOccurences[j]/numEntries))
+    //console.log(mOccurences, numEntries)
+    let counter = 0
+    for (let j of Object.keys(tOccurences)) {
+        if (mOccurences[j]) {
+            sum += Math.abs((tOccurences[j] - (mOccurences[j]/numEntries)))
+        } else {
+            sum += Math.abs(tOccurences[j])
         }
+        //console.log(sum, counter)
+        counter++
     }
-    console.log(sum)
+    //console.log(counter)
+    sum *= w
+    return sum
 }
+
+exports.findBigramSum = findBigramSum

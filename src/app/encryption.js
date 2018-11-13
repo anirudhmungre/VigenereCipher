@@ -11,3 +11,5 @@ function encrypt(ptxt, key){
     //Function returns encrypted text
     return etxt
 }
+
+console.log(encrypt("HELLOWORLDTHISISASMALLSTRINGTHATWILLBEENCRYPTEDFORTHEPURPOSESOFTHISTESTCASE", "CAT"))

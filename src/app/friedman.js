@@ -32,7 +32,7 @@ function buildCoset(index, etxt, keyLength) {
 
 function compareAvgIC (avgIC, eKey) {
     let icEnglish = 0.0686
-    if (Math.abs(icEnglish - avgIC) < 0.0095) {
+    if (avgIC > 0.05) {
         return eKey
     }
     return -1
@@ -42,9 +42,10 @@ function getEstKeyLen(etxt) {
     let eKeyLen = []
     for (let i = 0; i < etxt.length; i++) {
         if (compareAvgIC(calcAvgIC(i, etxt), i) != -1) {
-            console.log(calcAvgIC(i, etxt))
             eKeyLen.push(i)
         }
     }
     return eKeyLen
 }
+
+exports.getEstKeyLen = getEstKeyLen
