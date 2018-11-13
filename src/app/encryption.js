@@ -12,4 +12,8 @@ function encrypt(ptxt, key){
     return etxt
 }
 
+<<<<<<< HEAD
 console.log(encrypt("HELLOWORLDTHISISASMALLSTRINGTHATWILLBEENCRYPTEDFORTHEPURPOSESOFTHISTESTCASE", "CAT"))
+=======
+exports.encrypt = encrypt
+>>>>>>> 972b9201ac2517151da6b22ec364dfe4fbb400de
