@@ -1,5 +1,5 @@
 "use strict"
-const PORT = 80
+const PORT = 3770
 const express = require("express")
 const app = express()
 const path = require("path")
@@ -8,8 +8,8 @@ const helmet = require('helmet')
 const fileUpload = require('express-fileupload')
 const http = require("http").Server(app)
 
-const index = require('./routes/index')
-const api = require('./routes/api')
+const index = require('./app/routes/index')
+const api = require('./app/routes/api')
 
 // Server setup
 app.use(fileUpload())
@@ -19,8 +19,13 @@ app.set("views", path.join(__dirname, "app", "views"))
 app.set("view engine", "jade")
 // app.use(logger('dev'))
 app.use(helmet())
-app.use(bodyParser.json({ limit: '512mb' }))
-app.use(bodyParser.urlencoded({ limit: '512mb', extended: true }))
+app.use(bodyParser.json({
+  limit: '512mb'
+}))
+app.use(bodyParser.urlencoded({
+  limit: '512mb',
+  extended: true
+}))
 app.set("port", PORT)
 
 app.use('/', index)

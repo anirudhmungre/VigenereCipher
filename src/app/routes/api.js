@@ -2,11 +2,17 @@ var express = require('express')
 var router = express.Router()
 
 // Local requires
-const { encrypt } = require('../encryption')
-const { decrypt } = require('../decryption')
+const {
+    encrypt
+} = require('../encryption')
+const {
+    decrypt
+} = require('../decryption')
 // const { bfdecrypt } = require('../bfdecrypt')
 
-const { fried } = require('../friedman')
+const {
+    fried
+} = require('../friedman')
 
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
@@ -121,7 +127,10 @@ router.post("/do-decrypt-brute", (req, res) => {
         }
 
         let start_time = new Date().getTime()
-        let { decrypted, key } = bfdecrypt(dataToDecrypt)
+        let {
+            decrypted,
+            key
+        } = bfdecrypt(dataToDecrypt)
         let runtime = (new Date().getTime()) - start_time
 
         return res.json({
