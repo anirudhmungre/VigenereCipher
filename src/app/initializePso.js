@@ -19,7 +19,7 @@ function generateParticles(numParticles, keySize) {
             r1: Math.random() * (1 - 0) + 0,
             r2: Math.random() * (1 - 0) + 0,
             keySize: keySize,
-            pBest: keyStr,
+            pBest: keyStr.join(""),
             gBest: {}
         }
         keyStr = []

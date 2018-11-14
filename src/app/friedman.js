@@ -32,7 +32,7 @@ function buildCoset(index, etxt, keyLength) {
 
 function compareAvgIC (avgIC, eKey) {
     let icEnglish = 0.0686
-    if (avgIC > 0.05) {
+    if (avgIC > 0.055) {
         return eKey
     }
     return -1
