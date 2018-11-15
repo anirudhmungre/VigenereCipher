@@ -1,6 +1,6 @@
 "use strict"
-let fried = require("./friedman")
-let fs = require("fs")
+const fried = require("./friedman")
+const fs = require("fs")
 
 const getWords = () => {
     let text, words
