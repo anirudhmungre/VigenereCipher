@@ -1,50 +1,75 @@
 "use strict"
 
-function charRange(start, stop) {
-    var result = new Array()
-    var i = start.charCodeAt(0),
-        last = stop.charCodeAt(0) + 1
-    for (i; i < last; i++) {
-        result.push(String.fromCharCode(i))
-    }
-    return result
+function getWords(){
+    let fs, text, words
+    fs = require("fs")
+    text = fs.readFileSync("./dictionaryByFreq5000.txt", "utf-8").toUpperCase()
+    words = text.split("\n")
+    return words
 }
 
-function toString26(num) {
-    let letterArr = charRange('A', 'Z')
+function toString26(num, letterArr) {
+    let decremented, quotient, remainder
     let result = ''
-    if (num < 1) {
-        return result
-    }
-    let quotient = num,
-        remainder
+    if (num < 1) { return result }
+    quotient = num, remainder
     while (quotient !== 0) {
-        var decremented = quotient - 1
+        decremented = quotient - 1
         quotient = Math.floor(decremented / 26)
         remainder = decremented % 26
         result = letterArr[remainder] + result
     }
-
     return result
 }
-
+// for (let i = 0; i < 100; i++){
+//     console.log(toString26(i))
+// }
 function shift(etxt, key) {
     let dtxt = ""
+    let encLet, keyLet, shift
     for (let i = 0; i < etxt.length; i++) {
-        dtxt += String.fromCharCode((((etxt.charCodeAt(i) - key.charCodeAt(i % key.length)) - 130) % 26) + 65)
+        encLet = etxt.charCodeAt(i)
+        keyLet = key.charCodeAt(i % key.length)
+        if ((encLet) - (keyLet-65) < 65){
+            shift = 91 - Math.abs((encLet-65) - (keyLet-65))
+            dtxt += String.fromCharCode(shift)
+        }
+        else{dtxt += String.fromCharCode(encLet - (keyLet-65))}
     }
     return dtxt
 }
 
-function bruteForce(etxt) {
-    let testKey, ttxt, dtxt
-    for (let i = 0; i < etxt.length; i++) {
-        ttxt = etxt
-        testKey = toString26(i)
-        dtxt = shift(etxt, testKey)
+function checkDec(dtxt, words){
+    let count = 0
+    for (let i = 0; i < words.length; i++){
+        // console.log("FOUND " + i + ": " + dtxt.search(words[i]))
+        if (dtxt.search(words[i])!=-1){
+            count++
+        }
+        if(count >= 4){return true}
     }
+    return false
 }
-console.log(bruteForce(etxt))
+
+function bruteForce(etxt) {
+    let dtxt, words, letterArr, testKey, input
+    letterArr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
+    words = getWords()
+    testKey = toString26(1, letterArr)
+    for (let i = 1; testKey.length <= etxt.length; i++) {
+        dtxt = shift(etxt, testKey)
+        if (checkDec(dtxt, words)){
+            console.log("Is this decrypted?\n" + dtxt)
+            // USER INPUT FOR YES OR NO
+            return dtxt
+        }
+        testKey = toString26(i, letterArr)
+    }
+
+}
+bruteForce("DPVMEUIFTFGJSTUDPNF")
 
 
-exports.bruteForce = bruteForce
+// exports bruteForce = bruteForce
+// WOULD = XPVME
+// THE = UIF
