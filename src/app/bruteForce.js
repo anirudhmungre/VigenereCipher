@@ -47,7 +47,7 @@ const checkDec = (dtxt, words) => {
             foundSum += words[i].length
             ratio = foundSum / txtChar
         }
-        if (ratio > 0.7) { return true }
+        if (ratio > 0.9) { return true }
     }
     return false
 }
