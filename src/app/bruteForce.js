@@ -1,8 +1,9 @@
 "use strict"
+let fried = require("./friedman")
+let fs = require("fs")
 
 function getWords(){
-    let fs, text, words
-    fs = require("fs")
+    let text, words
     text = fs.readFileSync("./dictionaryByFreq5000.txt", "utf-8").toUpperCase()
     words = text.split("\n")
     return words
@@ -41,33 +42,49 @@ function shift(etxt, key) {
 
 function checkDec(dtxt, words){
     let count = 0
+    let foundSum = 0
+    let ratio = 0.0
+    let txtChar = dtxt.length
     for (let i = 0; i < words.length; i++){
         // console.log("FOUND " + i + ": " + dtxt.search(words[i]))
         if (dtxt.search(words[i])!=-1){
-            count++
+            foundSum += words[i].length
+            ratio = foundSum/txtChar
         }
-        if(count >= 4){return true}
+        if(ratio > 0.7){return true}
     }
     return false
 }
 
 function bruteForce(etxt) {
-    let dtxt, words, letterArr, testKey, input
+    let dtxt, words, letterArr, testKey, keyLens, kLen, start
     letterArr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
+    keyLens = fried.getEstKeyLen(etxt)
     words = getWords()
-    testKey = toString26(1, letterArr)
-    for (let i = 1; testKey.length <= etxt.length; i++) {
-        dtxt = shift(etxt, testKey)
-        if (checkDec(dtxt, words)){
-            console.log("Is this decrypted?\n" + dtxt)
-            // USER INPUT FOR YES OR NO
-            return dtxt
+    for (let i = 0; i < keyLens.length; i++){
+        kLen = keyLens[i]
+        start = 0
+        for (let j = kLen-1; j >= 0; j--){
+            start += 26**j
         }
-        testKey = toString26(i, letterArr)
+        testKey = "A".repeat(kLen)
+        for (let j = start+1; testKey.length == kLen; j++){
+            dtxt = shift(etxt, testKey)
+            if (checkDec(dtxt, words)){
+                console.log("Is this decrypted?\n" + dtxt)
+                // USER INPUT FOR YES OR NO
+                return dtxt
+            }
+            testKey = toString26(j, letterArr)
+        }
     }
 
 }
-bruteForce("DPVMEUIFTFGJSTUDPNF")
+
+console.time("runtime")
+bruteForce("HEYZUFQDHEWZVVYVUPWYLEJKKRWZVRUFXEGLVZWTDEEVOZYZQXRIQFQCLMLEJKKZQXVZWZQTOLGVVGKPVZFROTKVPZFRORQURKKVUEDKXIDCIFUTHJOZYZQXWYLEJJOZYVLEWYHZUVQMLIREPVQKWYHPFFQJWRQKOPLEWVURFKZZWYLKDEGRGRSKWYHDVVOMHJWFFFQULKLFQJLEWYHZUVQMLIREPVQKLEWYHVQMLIREPVQKWYHIHRUVGZIWHIHEWZQKHIDTWZREVSHKZVHEDELDDCVGORQKVZQJHTWJVFLCZRWVURQURKKVUCLMLEJRQUQFQCLMLEJKKZQXVJLEFVHMHIBKKZQXLJSRUKRWWYHVQMLIREPVQKRWVFPVWYLEJVOJHKKVZFUUHEYZUFQDHEWZVLVVGKRKDCNREFXKPRQPWYLEJJSVRGOVLEGZIWHIHEWWLVOUVFIBQFZCHUJVXJHKKVZFUUHEYZUFQDHEWULWIVUVQKOPHCHTWIRDDXQVWZFVQMLIREPVQKLJURGZRNDMHJDEGFWYHIHCHTWIRDDXQVWZFIDULRWZREDEGDDXQVWZFWLVOUVKKVJRORFKLTHEYZUFQDHEWIHWHIVKRTREGZWZREVSHKZVHEWYHJWRUJLESJBTKFOFJPDEGDHULTLEHRSVUJREVVQMLIREPVQKLJWYHGHFSCHGKPVZFROKKZQXVRQUSCDTHJWYDKWYHGHIVFQCLMHJZZWYWYHVQMLIREPVQKDWIVFKVKKVJIRNWYDEGUHMHCRGPVQKRWWYHGHIVFQZWRIWHTWJWYHGHIVFQJEVKRYZRLUSRUBDLEGRQUKVDIWULJFLVJLFQJREQRWLUVYVUJXJQLUKXIHRUVVFPVWZPVVWURPVGRVYHIHULKBMVVQMLIREPVQK")
+console.timeEnd("runtime")
+
 
 
 // exports bruteForce = bruteForce
