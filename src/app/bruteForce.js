@@ -9,7 +9,7 @@ const getWords = () => {
     return words
 }
 
-const toString26 = (num, letterArr) => {
+const toString26 = (num, LETARR) => {
     let decremented, quotient, remainder
     let result = ''
     if (num < 1) { return result }
@@ -18,7 +18,7 @@ const toString26 = (num, letterArr) => {
         decremented = quotient - 1
         quotient = Math.floor(decremented / 26)
         remainder = decremented % 26
-        result = letterArr[remainder] + result
+        result = LETARR[remainder] + result
     }
     return result
 }
@@ -38,13 +38,13 @@ const shift = (etxt, key) => {
     return dtxt
 }
 
-const checkDec = (dtxt, words) => {
+const checkDec = (dtxt, DICT) => {
     let foundSum = 0
     let ratio = 0.0
-    let txtChar = dtxt.length
-    for (let i = 0; i < words.length; i++) {
-        if (dtxt.search(words[i]) != -1) {
-            foundSum += words[i].length
+    const txtChar = dtxt.length
+    for (let i = 0; i < DICT.length; i++) {
+        if (dtxt.search(DICT[i]) != -1) {
+            foundSum += DICT[i].length
             ratio = foundSum / txtChar
         }
         if (ratio > 0.9) { return true }
@@ -53,12 +53,12 @@ const checkDec = (dtxt, words) => {
 }
 
 const bruteForce = (etxt) => {
-    let dtxt, words, letterArr, testKey, keyLens, kLen, start
-    letterArr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
-    keyLens = fried.getEstKeyLen(etxt)
-    words = getWords()
-    for (let i = 0; i < keyLens.length; i++) {
-        kLen = keyLens[i]
+    let dtxt, testKey, kLen, start
+    const LETARR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
+    const KEYLENS = fried.getEstKeyLen(etxt)
+    const DICT = getWords()
+    for (let i = 0; i < KEYLENS.length; i++) {
+        kLen = KEYLENS[i]
         start = 0
         for (let j = kLen - 1; j >= 0; j--) {
             start += 26 ** j
@@ -66,12 +66,12 @@ const bruteForce = (etxt) => {
         testKey = "A".repeat(kLen)
         for (let j = start + 1; testKey.length == kLen; j++) {
             dtxt = shift(etxt, testKey)
-            if (checkDec(dtxt, words)) {
+            if (checkDec(dtxt, DICT)) {
                 console.log("Is this decrypted?\nKey: " + testKey + "\nText: " + dtxt)
                 // USER INPUT FOR YES OR NO
                 return dtxt
             }
-            testKey = toString26(j, letterArr)
+            testKey = toString26(j, LETARR)
         }
     }
 }
