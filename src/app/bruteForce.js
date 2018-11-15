@@ -2,14 +2,14 @@
 let fried = require("./friedman")
 let fs = require("fs")
 
-function getWords(){
+const getWords = () => {
     let text, words
     text = fs.readFileSync("./dictionaryByFreq5000.txt", "utf-8").toUpperCase()
     words = text.split("\n")
     return words
 }
 
-function toString26(num, letterArr) {
+const toString26 = (num, letterArr) => {
     let decremented, quotient, remainder
     let result = ''
     if (num < 1) { return result }
@@ -22,71 +22,60 @@ function toString26(num, letterArr) {
     }
     return result
 }
-// for (let i = 0; i < 100; i++){
-//     console.log(toString26(i))
-// }
-function shift(etxt, key) {
+
+const shift = (etxt, key) => {
     let dtxt = ""
     let encLet, keyLet, shift
     for (let i = 0; i < etxt.length; i++) {
         encLet = etxt.charCodeAt(i)
         keyLet = key.charCodeAt(i % key.length)
-        if ((encLet) - (keyLet-65) < 65){
-            shift = 91 - Math.abs((encLet-65) - (keyLet-65))
+        if ((encLet) - (keyLet - 65) < 65) {
+            shift = 91 - Math.abs((encLet - 65) - (keyLet - 65))
             dtxt += String.fromCharCode(shift)
         }
-        else{dtxt += String.fromCharCode(encLet - (keyLet-65))}
+        else { dtxt += String.fromCharCode(encLet - (keyLet - 65)) }
     }
     return dtxt
 }
 
-function checkDec(dtxt, words){
-    let count = 0
+const checkDec = (dtxt, words) => {
     let foundSum = 0
     let ratio = 0.0
     let txtChar = dtxt.length
-    for (let i = 0; i < words.length; i++){
-        // console.log("FOUND " + i + ": " + dtxt.search(words[i]))
-        if (dtxt.search(words[i])!=-1){
+    for (let i = 0; i < words.length; i++) {
+        if (dtxt.search(words[i]) != -1) {
             foundSum += words[i].length
-            ratio = foundSum/txtChar
+            ratio = foundSum / txtChar
         }
-        if(ratio > 0.7){return true}
+        if (ratio > 0.7) { return true }
     }
     return false
 }
 
-function bruteForce(etxt) {
+const bruteForce = (etxt) => {
     let dtxt, words, letterArr, testKey, keyLens, kLen, start
     letterArr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
     keyLens = fried.getEstKeyLen(etxt)
     words = getWords()
-    for (let i = 0; i < keyLens.length; i++){
+    for (let i = 0; i < keyLens.length; i++) {
         kLen = keyLens[i]
         start = 0
-        for (let j = kLen-1; j >= 0; j--){
-            start += 26**j
+        for (let j = kLen - 1; j >= 0; j--) {
+            start += 26 ** j
         }
         testKey = "A".repeat(kLen)
-        for (let j = start+1; testKey.length == kLen; j++){
+        console.log(kLen + ": " + testKey)
+        for (let j = start + 1; testKey.length == kLen; j++) {
+            console.log(testKey)
             dtxt = shift(etxt, testKey)
-            if (checkDec(dtxt, words)){
-                console.log("Is this decrypted?\n" + dtxt)
+            if (checkDec(dtxt, words)) {
+                console.log("Is this decrypted?\nKey: " + testKey + "\nText: " + dtxt)
                 // USER INPUT FOR YES OR NO
                 return dtxt
             }
             testKey = toString26(j, letterArr)
         }
     }
-
 }
 
-console.time("runtime")
-bruteForce("HEYZUFQDHEWZVVYVUPWYLEJKKRWZVRUFXEGLVZWTDEEVOZYZQXRIQFQCLMLEJKKZQXVZWZQTOLGVVGKPVZFROTKVPZFRORQURKKVUEDKXIDCIFUTHJOZYZQXWYLEJJOZYVLEWYHZUVQMLIREPVQKWYHPFFQJWRQKOPLEWVURFKZZWYLKDEGRGRSKWYHDVVOMHJWFFFQULKLFQJLEWYHZUVQMLIREPVQKLEWYHVQMLIREPVQKWYHIHRUVGZIWHIHEWZQKHIDTWZREVSHKZVHEDELDDCVGORQKVZQJHTWJVFLCZRWVURQURKKVUCLMLEJRQUQFQCLMLEJKKZQXVJLEFVHMHIBKKZQXLJSRUKRWWYHVQMLIREPVQKRWVFPVWYLEJVOJHKKVZFUUHEYZUFQDHEWZVLVVGKRKDCNREFXKPRQPWYLEJJSVRGOVLEGZIWHIHEWWLVOUVFIBQFZCHUJVXJHKKVZFUUHEYZUFQDHEWULWIVUVQKOPHCHTWIRDDXQVWZFVQMLIREPVQKLJURGZRNDMHJDEGFWYHIHCHTWIRDDXQVWZFIDULRWZREDEGDDXQVWZFWLVOUVKKVJRORFKLTHEYZUFQDHEWIHWHIVKRTREGZWZREVSHKZVHEWYHJWRUJLESJBTKFOFJPDEGDHULTLEHRSVUJREVVQMLIREPVQKLJWYHGHFSCHGKPVZFROKKZQXVRQUSCDTHJWYDKWYHGHIVFQCLMHJZZWYWYHVQMLIREPVQKDWIVFKVKKVJIRNWYDEGUHMHCRGPVQKRWWYHGHIVFQZWRIWHTWJWYHGHIVFQJEVKRYZRLUSRUBDLEGRQUKVDIWULJFLVJLFQJREQRWLUVYVUJXJQLUKXIHRUVVFPVWZPVVWURPVGRVYHIHULKBMVVQMLIREPVQK")
-console.timeEnd("runtime")
-
-
-
-// exports bruteForce = bruteForce
-// WOULD = XPVME
-// THE = UIF
+exports.bruteForce = bruteForce
