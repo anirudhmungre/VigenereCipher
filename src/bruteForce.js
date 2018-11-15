@@ -46,7 +46,7 @@ function checkDec(dtxt, words){
         if (dtxt.search(words[i])!=-1){
             count++
         }
-        if(count >= 3){return true}
+        if(count >= 4){return true}
     }
     return false
 }
@@ -61,13 +61,13 @@ function bruteForce(etxt) {
         if (checkDec(dtxt, words)){
             console.log("Is this decrypted?\n" + dtxt)
             // USER INPUT FOR YES OR NO
-            if (input = "Y"||"y"){return dtxt}
+            return dtxt
         }
         testKey = toString26(i, letterArr)
     }
 
 }
-bruteForce("COULDTHESEFIRSTCOME")
+bruteForce("DPVMEUIFTFGJSTUDPNF")
 
 
 // exports bruteForce = bruteForce
