@@ -80,6 +80,7 @@ function psoMain(etxt, numParticles) {
             updateVelocity(particle, gBestKey.split(""), particle.pBest.split(""))
             updatePosition(particle)
         }
+        
         console.log(gBestKey, gBestFitness)
         ++counter
     }
