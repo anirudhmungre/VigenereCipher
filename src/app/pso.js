@@ -57,6 +57,7 @@ function psoMain(etxt, numParticles) {
     gBestFitness = findFitness(dtxt)
     gBestKey = particle.x.join("")
 
+    // Possible saturation condition... Check the personal best of each of the particles... check to see % of particles with the same best & see if it matches global best.
     let counter = 0
     while ( /* ((pgBest.fitness - encryptedFitness) < 3.5) || */ counter < 1000) {
         for (let j = 0; j < particleLst.length; j++) {
