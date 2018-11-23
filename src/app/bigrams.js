@@ -37,15 +37,10 @@ function findBigramSum(dtxt, w) {
             ++numEntries
     }
 
-    let counter = 0
     for (let j of Object.keys(tOccurences)) {
         if (mOccurences[j]) {
             sum += Math.abs((tOccurences[j] - (mOccurences[j] / numEntries)))
-        } else {
-            sum += Math.abs(tOccurences[j])
-        }
-
-        counter++
+        } 
     }
 
     sum *= w
