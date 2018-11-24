@@ -106,8 +106,7 @@ body {
 
 #inline-menu {
     display: grid;
-    grid-template-columns: "a b c";
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 1em;
 }
 

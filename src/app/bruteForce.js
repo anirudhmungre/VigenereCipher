@@ -4,7 +4,7 @@ const fs = require("fs")
 
 const getWords = () => {
     let text, words
-    text = fs.readFileSync("./dictionaryByFreq5000.txt", "utf-8").toUpperCase()
+    text = fs.readFileSync("./app/dictionaryByFreq5000.txt", "utf-8").toUpperCase()
     words = text.split("\n")
     return words
 }
