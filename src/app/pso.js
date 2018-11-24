@@ -82,7 +82,6 @@ function psoMain(etxt, numParticles) {
             updateVelocity(particle, gBestKey.split(""), particle.pBest.split(""))
             updatePosition(particle)
         }
-
         if (prevBest === gBestKey) {
             tCounter++
             if(tCounter > 250) {
@@ -93,9 +92,7 @@ function psoMain(etxt, numParticles) {
         }
         ++counter
         prevBest = gBestKey
-        console.log(gBestKey)
     }
-
     return gBestKey
 }
 // console.time("pso")

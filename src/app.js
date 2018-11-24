@@ -6,17 +6,21 @@ const app = express()
 const path = require("path")
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
+const compression = require('compression')
 const fileUpload = require('express-fileupload')
 const http = require("http").Server(app)
 console.log(`Imports`)
+
 const index = require('./app/routes/index')
 const api = require('./app/routes/api')
 console.log(`Routes`)
+
 // Server setup
 app.use(fileUpload())
 app.use(express.static(path.join(__dirname, "app", "public")))
 app.set("views", path.join(__dirname, "app", "views"))
 app.set("view engine", "jade")
+app.use(compression())
 app.use(helmet())
 app.use(bodyParser.json({
   limit: '512mb'
