@@ -47,7 +47,9 @@ function updateGBest(particleLst, gBestNew) {
 function psoMain(etxt, numParticles) {
     let particleLst = particles.generateParticles(numParticles, friedman.getEstKeyLen(etxt)[0]),
     gBestFitness = 100,
-    gBestKey = ""
+    gBestKey = "",
+    prevBest = "",
+    tCounter = 0
 
     // First run: Initializing the global best
     let particle = particleLst[0],
@@ -57,8 +59,9 @@ function psoMain(etxt, numParticles) {
     gBestFitness = findFitness(dtxt)
     gBestKey = particle.x.join("")
 
+    // Possible saturation condition... Check the personal best of each of the particles... check to see % of particles with the same best & see if it matches global best.
     let counter = 0
-    while ( /* ((pgBest.fitness - encryptedFitness) < 3.5) || */ counter < 1000) {
+    while (counter < 1000) {
         for (let j = 0; j < particleLst.length; j++) {
 
             let particle = particleLst[j],
@@ -80,11 +83,21 @@ function psoMain(etxt, numParticles) {
             updateVelocity(particle, gBestKey.split(""), particle.pBest.split(""))
             updatePosition(particle)
         }
-        console.log(gBestKey, gBestFitness)
+
+        
+        if (prevBest == gBestKey) {
+            tCounter++
+            if(tCounter > 250) {
+                return gBestKey
+            }
+        } else {
+            tCounter = 0
+        }
         ++counter
+        prevBest = gBestKey
     }
 
-    //return pgBest 
+    return gBestKey 
 }
 
-psoMain("IOIKWIYIFKXZAKEBWLWXTZTUEHLOXWDTELLXUGLLPAWGYAKOLLTYWAWTIESRTUCJCEAEVADYDARPUYGXWLRDECNUSKTAHWICNLAWWSAFKJHGWMHHVWVHHTAPTHNVVDIUKXAHNYYPNEUEEHBDIDMMSRNKIXJTYEFXIOIFKHVNWADBLVRDAEPTTJTLSQLTZIRHSW", 100)
+console.log(psoMain("IOIKWIYIFKXZAKEBWLWXTZTUEHLOXWDTELLXUGLLPAWGYAKOLLTYWAWTIESRTUCJCEAEVADYDARPUYGXWLRDECNUSKTAHWICNLAWWSAFKJHGWMHHVWVHHTAPTHNVVDIUKXAHNYYPNEUEEHBDIDMMSRNKIXJTYEFXIOIFKHVNWADBLVRDAEPTTJTLSQLTZIRHSW", 100) )
