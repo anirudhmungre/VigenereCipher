@@ -43,6 +43,4 @@ function findMonogramSum(dtxt, w) {
     return sum
 }
 
-//findMonogramSum("THECATISINHEHOUSE", .23)
-
 exports.findMonogramSum = findMonogramSum
