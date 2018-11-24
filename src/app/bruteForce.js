@@ -47,7 +47,7 @@ const checkDec = (dtxt, DICT) => {
             foundSum += DICT[i].length
             ratio = foundSum / txtChar
         }
-        if (ratio > 0.9) { return true }
+        if (ratio > 0.95) { return true }
     }
     return false
 }
@@ -75,5 +75,5 @@ const bruteForce = (etxt) => {
         }
     }
 }
-
-exports.bruteForce = bruteForce
+bruteForce("UMITNSBYETYSUWIOL")
+// exports.bruteForce = bruteForce
