@@ -1,6 +1,8 @@
 "use strict"
 const fried = require("./friedman")
 const fs = require("fs")
+const monogram = require('./monogram.js')
+const bigram = require('./bigrams.js')
 
 const getWords = () => {
     let text, words
@@ -38,35 +40,49 @@ const shift = (etxt, key) => {
     return dtxt
 }
 
-const checkDec = (dtxt, DICT) => {
-    let foundSum = 0
-    let ratio = 0.0
-    const txtChar = dtxt.length
-    for (let i = 0; i < DICT.length; i++) {
-        if (dtxt.search(DICT[i]) != -1) {
-            foundSum += DICT[i].length
-            ratio = foundSum / txtChar
-        }
-        if (ratio > 0.95) { return true }
-    }
-    return false
+// const checkDec = (dtxt, DICT) => {
+//     let foundSum = 0
+//     let ratio = 0.0
+//     const txtChar = dtxt.length
+//     for (let i = 0; i < DICT.length; i++) {
+//         if (dtxt.search(DICT[i]) != -1) {
+//             foundSum += DICT[i].length
+//             ratio = foundSum / txtChar
+//         }
+//         if (ratio > 0.95) { return true }
+//     }
+//     return false
+// }
+
+const checkDec = (dtxt) => {
+    let mSum = monogram.findMonogramSum(dtxt, 0.23),
+        bSum = bigram.findBigramSum(dtxt, .77)
+    return mSum + bSum
 }
 
 const bruteForce = (etxt) => {
-    let dtxt, testKey, kLen, start
+    let dtxt, testKey, kLen, start, freq
     const LETARR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
     const KEYLENS = fried.getEstKeyLen(etxt)
-    const DICT = getWords()
+    // const DICT = getWords()
     for (let i = 0; i < KEYLENS.length; i++) {
         kLen = KEYLENS[i]
+        console.log(kLen)
         start = 0
         for (let j = kLen - 1; j >= 0; j--) {
             start += 26 ** j
         }
         testKey = "A".repeat(kLen)
         for (let j = start + 1; testKey.length == kLen; j++) {
+            console.log(testKey)
             dtxt = shift(etxt, testKey)
-            if (checkDec(dtxt, DICT)) {
+            // if (checkDec(dtxt, DICT)) {
+            //     console.log("Is this decrypted?\nKey: " + testKey + "\nText: " + dtxt)
+            //     // USER INPUT FOR YES OR NO
+            //     return dtxt
+            // }
+            freq = checkDec(dtxt)
+            if (freq < 0.5 && freq > 0) {
                 console.log("Is this decrypted?\nKey: " + testKey + "\nText: " + dtxt)
                 // USER INPUT FOR YES OR NO
                 return dtxt
@@ -75,5 +91,7 @@ const bruteForce = (etxt) => {
         }
     }
 }
-bruteForce("UMITNSBYETYSUWIOL")
+console.time("runtime")
+bruteForce("HIDNCUKVYRWEQIPYJPPGUVHEBNVCXSJVHMLOFCHCJCPRBTPAIUAJREPJFAPRZZHIZGFZMQXFGXFWLHIMXRCCMFVPRWOYTVCSKCSAGJIELVNXXFSCBSQLEDVCKKGMALZDRQOYPXQGVKIPQFJQYQTDTWAKVMTWZIEUSPDVPWLHIGLLCHCJKWIRWIBWMXKWINJFYIALXJXCFSTVEDZRILKVXRADLSIBOZILRZZHIZGFZSPGEAMLWRIAUOXJXCFSTVEGIVXGLCTEJATTWYVMTRRMITWGFNDRBWIAELVRJXFGIAIUAJREPJFAPNGJIMLYUPXCBLCICTFDOPWCTEQWUPXCERGGFDRHXSHUPXCVUTGCESTVJSEVYYYVTREDZHLAZRGEALVGWCLVCGMVZCKYKTXMQLRGXMXKWMQHIDNCUKVYRWEQIPYVQSMCRAMAWJPHTWEIYPWJXRUGESIPDRCHYDZRIQSUKILLLGIQAELSLVVGPYFUAIUAJREPJFAPRZVBMJDVCRGMDUYJUIJQCVZIMMFTWENLVGMBGNCXFWIPFZAKWSJWRAMAWNPWZWXXRLAEVXMYVIZCJPIMPWUDJQAKIMLYSNLCJJXWRWIDRRZVQELCRCHMXYPZGFXCSRZZCKRGUDSLUVDVROZRIQZVWEBHVTTCVZCXMLYTFMGBWIPKZHXCJNPWPWRSMLYSJXGLYPHLGGXGRMITWMJTDRTWIHERAFCWGFZIELVNWERAJILCMJTSDSSDSILYDYEZKPPGUVLMRZFJXNATIYPWJDVAGEKIPKRIMMFJHSQZVLEQUFCWGVVGMLYZCLCJFLRKAESEQOVAPYKJWIAGLAHDGIILCZFIHYQDPHCZVGJCWCKIPQJAICHPPRBKKJTGVNWIRZVGXFWGAIYKLGIMXDPOGFXPHYAJNGFSZCAMMCSFCOFGXFLYTXPGLQPCGWVIRLZCKSHRCHNATZMLYKWIBSZHMCKNWILKLSHCFCNEUZZIIPSSQMROZILNAEZIWWJGELUCDWCTPWIPLYTVCORHRMLYXREKFKIPQITQYJBPFJWZCXFSKCSPVZSEJATTXFAEZMRKFKIPQDJGFGLISDLYTAYQKDLCSIILCJRQFGLJPCRGZIWCDWDLBWRGSFVVPVGKYPPJTVAERWNWILKYTXF")
+console.timeEnd("runtime")
 // exports.bruteForce = bruteForce
