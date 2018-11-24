@@ -1,19 +1,18 @@
 "use strict"
-
-let decrypt = require('./decryption.js'),
-    monogram = require('./monogram.js'),
-    bigram = require('./bigrams.js'),
-    particles = require('./initializePso.js'),
-    friedman = require('./friedman.js')
+let { decrypt } = require('./decryption'),
+    { findMonogramSum } = require('./monogram'),
+    { findBigramSum } = require('./bigrams'),
+    particles = require('./initializePso'),
+    friedman = require('./friedman')
 
 function findFitness(dtxt) {
-    let mSum = monogram.findMonogramSum(dtxt, 0.23),
-        bSum = bigram.findBigramSum(dtxt, .77)
+    let mSum = findMonogramSum(dtxt, 0.23),
+        bSum = findBigramSum(dtxt, .77)
     return mSum + bSum
 }
 
 function subtractChar(chOne, chTwo) {
-    return ((((chOne.charCodeAt(0) - 65) - (chTwo.charCodeAt(0) - 65))) % 26) 
+    return ((((chOne.charCodeAt(0) - 65) - (chTwo.charCodeAt(0) - 65))) % 26)
 }
 
 function updateVelocity(particle, gBestKey, pBest) {
@@ -53,7 +52,7 @@ function psoMain(etxt, numParticles) {
 
     // First run: Initializing the global best
     let particle = particleLst[0],
-        dtxt = decrypt.decrypt(etxt, particle.x.join(""))
+        dtxt = decrypt(etxt, particle.x.join(""))
     particle.fitness = findFitness(dtxt)
     updateGBest(particleLst, particle)
     gBestFitness = findFitness(dtxt)
@@ -67,16 +66,16 @@ function psoMain(etxt, numParticles) {
             let particle = particleLst[j],
             dtxt = "",
             fitness
-            
-            dtxt = decrypt.decrypt(etxt, particle.x.join(""))
+
+            dtxt = decrypt(etxt, particle.x.join(""))
             fitness = findFitness(dtxt)
-            
+
             if ((fitness * 1000) < (gBestFitness * 1000)) {
                 gBestKey = particle.x.join("")
                 gBestFitness = fitness
                 updateGBest(particleLst, particle)
             }
-            if (fitness < findFitness(decrypt.decrypt(etxt, particle.pBest))) {
+            if (fitness < findFitness(decrypt(etxt, particle.pBest))) {
                 particle.pBest = particle.x.join("")
             }
 
@@ -84,8 +83,7 @@ function psoMain(etxt, numParticles) {
             updatePosition(particle)
         }
 
-        
-        if (prevBest == gBestKey) {
+        if (prevBest === gBestKey) {
             tCounter++
             if(tCounter > 250) {
                 return gBestKey
@@ -95,9 +93,13 @@ function psoMain(etxt, numParticles) {
         }
         ++counter
         prevBest = gBestKey
+        console.log(gBestKey)
     }
 
-    return gBestKey 
+    return gBestKey
 }
+// console.time("pso")
+// console.log(psoMain("IOIKWIYIFKXZAKEBWLWXTZTUEHLOXWDTELLXUGLLPAWGYAKOLLTYWAWTIESRTUCJCEAEVADYDARPUYGXWLRDECNUSKTAHWICNLAWWSAFKJHGWMHHVWVHHTAPTHNVVDIUKXAHNYYPNEUEEHBDIDMMSRNKIXJTYEFXIOIFKHVNWADBLVRDAEPTTJTLSQLTZIRHSW", 100) )
+// console.timeEnd("pso")
 
-console.log(psoMain("IOIKWIYIFKXZAKEBWLWXTZTUEHLOXWDTELLXUGLLPAWGYAKOLLTYWAWTIESRTUCJCEAEVADYDARPUYGXWLRDECNUSKTAHWICNLAWWSAFKJHGWMHHVWVHHTAPTHNVVDIUKXAHNYYPNEUEEHBDIDMMSRNKIXJTYEFXIOIFKHVNWADBLVRDAEPTTJTLSQLTZIRHSW", 100) )
+exports.PSO = psoMain

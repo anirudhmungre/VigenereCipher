@@ -1,4 +1,6 @@
 "use strict"
+const fs = require('fs')
+const fileData = fs.readFileSync(__dirname + '/tst.txt', 'utf-8')
 
 function findBigrams(dtxt) {
     let arrBigrams = []
@@ -9,8 +11,7 @@ function findBigrams(dtxt) {
 }
 
 function buildTopOccurences() {
-    const fs = require('fs')
-    let arrFreq = fs.readFileSync('./tst.txt', 'UTF-8').split('\n').map(function (sp) {
+    let arrFreq = fileData.split('\n').map(function (sp) {
         return sp.split(' ')
     })
     let tOccurences = {}
@@ -40,7 +41,7 @@ function findBigramSum(dtxt, w) {
     for (let j of Object.keys(tOccurences)) {
         if (mOccurences[j]) {
             sum += Math.abs((tOccurences[j] - (mOccurences[j] / numEntries)))
-        } 
+        }
     }
 
     sum *= w
