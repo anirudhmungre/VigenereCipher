@@ -1,14 +1,13 @@
 "use strict"
-
 let { decrypt } = require('./decryption'),
-    monogram = require('./monogram'),
-    bigram = require('./bigrams'),
+    { findMonogramSum } = require('./monogram'),
+    { findBigramSum } = require('./bigrams'),
     particles = require('./initializePso'),
     friedman = require('./friedman')
 
 function findFitness(dtxt) {
-    let mSum = monogram.findMonogramSum(dtxt, 0.23),
-        bSum = bigram.findBigramSum(dtxt, .77)
+    let mSum = findMonogramSum(dtxt, 0.23),
+        bSum = findBigramSum(dtxt, .77)
     return mSum + bSum
 }
 

@@ -1,5 +1,6 @@
 "use strict"
 const fs = require("fs")
+const fileData = fs.readFileSync(__dirname + "/CharOccurences.txt", "utf-8")
 
 function findMonograms(dtxt) {
     let arr = (new Array(27)).fill(0),
@@ -22,7 +23,7 @@ function findFrequencies(dtxt) {
 }
 
 function readFrequency() {
-    let arrFreq = fs.readFileSync(__dirname + "/CharOccurences.txt", "utf-8").split('\n')
+    let arrFreq = fileData.split('\n')
     for (let i = 0; i < arrFreq.length; i++) {
         arrFreq[i] = Number(arrFreq[i]) / 100
     }
