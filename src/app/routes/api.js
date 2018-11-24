@@ -2,17 +2,11 @@ var express = require('express')
 var router = express.Router()
 
 // Local requires
-const {
-    encrypt
-} = require('../encryption')
-const {
-    decrypt
-} = require('../decryption')
-// const { bfdecrypt } = require('../bfdecrypt')
-
-const {
-    fried
-} = require('../friedman')
+const { encrypt } = require('../encryption')
+const { decrypt } = require('../decryption')
+const { PSO } = require('../pso')
+// const { bfdecrypt } = require('../bruteForce')
+const { fried } = require('../friedman')
 
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
@@ -39,7 +33,7 @@ router.post("/do-encrypt", (req, res) => {
     if (req.body.inputMethod) {
         let dataToEncrypt = ""
         if (req.body.inputMethod === 'file') {
-            if (Object.keys(req.files).length == 0) {
+            if (Object.keys(req.files).length === 0) {
                 return res.json({
                     "ERROR": "No File Uploaded..."
                 })
@@ -75,7 +69,7 @@ router.post("/do-decrypt", (req, res) => {
     if (req.body.inputMethod) {
         let dataToDecrypt = ""
         if (req.body.inputMethod === 'file') {
-            if (Object.keys(req.files).length == 0) {
+            if (Object.keys(req.files).length === 0) {
                 return res.json({
                     "ERROR": "No File Uploaded..."
                 })
@@ -111,7 +105,7 @@ router.post("/do-decrypt-brute", (req, res) => {
     if (req.body.inputMethod) {
         let dataToDecrypt = ""
         if (req.body.inputMethod === 'file') {
-            if (Object.keys(req.files).length == 0) {
+            if (Object.keys(req.files).length === 0) {
                 return res.json({
                     "ERROR": "No File Uploaded..."
                 })
@@ -151,7 +145,7 @@ router.post("/do-decrypt-pso", (req, res) => {
     if (req.body.inputMethod) {
         let dataToDecrypt = ""
         if (req.body.inputMethod === 'file') {
-            if (Object.keys(req.files).length == 0) {
+            if (Object.keys(req.files).length === 0) {
                 return res.json({
                     "ERROR": "No File Uploaded..."
                 })
@@ -165,17 +159,18 @@ router.post("/do-decrypt-pso", (req, res) => {
                 "ERROR": "Invalid request... You shouldn't be able to do this!"
             })
         }
-        return res.json({})
-        // let start_time = new Date().getTime()
-        // // let { decrypted, key } = bfdecrypt(dataToDecrypt)
-        // let runtime = (new Date().getTime()) - start_time
 
-        // return res.json({
-        //     "raw": dataToDecrypt,
-        //     "dec": decrypted,
-        //     "key": key,
-        //     "runtime": runtime
-        // })
+        let start_time = new Date().getTime()
+
+        let key = PSO(dataToDecrypt, 100)
+        let runtime = (new Date().getTime()) - start_time
+
+        return res.json({
+            "raw": dataToDecrypt,
+            "dec": decrypt(dataToDecrypt, key),
+            "key": key,
+            "runtime": runtime
+        })
     } else {
         // Something has gone VERY wrong if this happens...
         return res.json({
