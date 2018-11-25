@@ -18,6 +18,7 @@
   "homepage": "https://github.com/anirudhmungre/VigenereCipher#readme",
   "dependencies": {
     "body-parser": "~1.15.2",
+    "compression": "^1.7.3",
     "express": "^4.16.2",
     "express-fileupload": "^1.0.0",
     "helmet": "^3.15.0",
@@ -26,6 +27,7 @@
     "morgan": "~1.7.0",
     "path": "^0.12.7",
     "serve-favicon": "~2.3.0",
-    "vigenere": "^1.0.2"
+    "vigenere": "^1.0.2",
+    "workerpool": "^2.3.3"
   }
 }

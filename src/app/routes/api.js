@@ -1,11 +1,12 @@
 var express = require('express')
+const workerpool = require('workerpool')
 var router = express.Router()
+var pool = workerpool.pool()
 
 // Local requires
 const { encrypt } = require('../encryption')
 const { decrypt } = require('../decryption')
 const { PSO } = require('../pso')
-// const { bfdecrypt } = require('../bruteForce')
 const { fried } = require('../friedman')
 
 String.prototype.strip = function () {
@@ -13,19 +14,38 @@ String.prototype.strip = function () {
 }
 
 router.get("/", (req, res) => {
-    return res.json({
-        "response": 200,
-        "message": "Welcome to the home page of the API!"
+    pool.exec(function () {
+        return false
+    })
+    .then(function (result) {
+        return res.json({
+            "response": 200,
+            "message": "Welcome to the home page of the API!"
+        })
+    })
+    .catch(function (err) {
+        console.error(err)
+    })
+    .then(function () {
+        pool.terminate()
     })
 })
 
 router.get("/fried/:text", (req, res) => {
     let txt = req.params.text.strip()
-    let fr = fried(txt)
-    return res.json({
-        "response": 200,
-        "fried": fr,
-        "text": txt
+    pool.exec(fried, [txt])
+    .then(function (result) {
+        return res.json({
+            "response": 200,
+            "fried": result,
+            "text": txt
+        })
+    })
+    .catch(function (err) {
+        console.error(err)
+    })
+    .then(function () {
+        pool.terminate()
     })
 })
 
