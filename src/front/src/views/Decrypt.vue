@@ -34,7 +34,7 @@
                                                 prepend-icon='vpn_key'
                                                 v-model="textDecryptKey"
                                         ></v-text-field>
-                                        <v-btn block color="primary" large>Decrypt</v-btn>
+                                        <v-btn @click="socketDecryptByText" block color="primary" large>Decrypt</v-btn>
                                     </v-form>
                                 </v-card-text>
                             </v-card>
@@ -60,7 +60,7 @@
                                                 prepend-icon='vpn_key'
                                                 v-model="fileDecryptKey"
                                         ></v-text-field>
-                                        <v-btn block color="primary" large>Decrypt</v-btn>
+                                        <v-btn @click="socketDecryptByFile" block color="primary" large>Decrypt</v-btn>
                                     </v-form>
                                 </v-card-text>
                             </v-card>
@@ -82,9 +82,13 @@
 </template>
 
 <script>
+    import io from 'socket.io-client'
+
     export default {
         name: 'Decrypt',
         data: () => ({
+            socket: io('localhost:3770'),
+
             showDecrypted: false,
 
             textDecryptValid: false,
@@ -111,7 +115,31 @@
             fileName: '',
             fileUrl: '',
         }),
+        mounted() {
+            this.socket.on('RESULT_DECRYPT_BY_TEXT', (data) => {
+                // something
+            })
+            this.socket.on('RESULT_DECRYPT_BY_FILE', (data) => {
+                // something
+            })
+        },
         methods: {
+            socketDecryptByText() {
+                if (this.textDecryptValid) {
+                    this.socket.emit('DECRYPT_BY_TEXT', {
+                        plainText: this.textDecryptText,
+                        key: this.textDecryptKey
+                    })
+                }
+            },
+            socketDecryptByFile() {
+                if (this.fileDecryptValid) {
+                    this.socket.emit('DECRYPT_BY_FILE', {
+                        plainText: this.fileUrl,
+                        key: this.fileDecryptKey
+                    })
+                }
+            },
             pickFile() {
                 this.$refs.image.click()
             },
