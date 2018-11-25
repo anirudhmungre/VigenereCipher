@@ -135,7 +135,7 @@
             socketDecryptByFile() {
                 if (this.fileDecryptValid) {
                     this.socket.emit('DECRYPT_BY_FILE', {
-                        plainText: this.fileUrl,
+                        fileBase64: this.fileUrl,
                         key: this.fileDecryptKey
                     })
                 }

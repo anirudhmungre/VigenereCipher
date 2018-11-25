@@ -27,6 +27,7 @@
     "morgan": "~1.7.0",
     "path": "^0.12.7",
     "serve-favicon": "~2.3.0",
+    "socket.io": "^2.1.1",
     "vigenere": "^1.0.2",
     "workerpool": "^2.3.3"
   }

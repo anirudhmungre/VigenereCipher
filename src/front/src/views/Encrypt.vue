@@ -135,7 +135,7 @@
             socketEncryptByFile() {
                 if (this.fileEncryptValid) {
                     this.socket.emit('ENCRYPT_BY_FILE', {
-                        plainText: this.fileUrl,
+                        fileBase64: this.fileUrl,
                         key: this.fileEncryptKey
                     })
                 }
