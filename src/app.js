@@ -1,15 +1,18 @@
 "use strict"
 const PORT = 3770
+const SOCKET_PORT = 3771
 const express = require("express")
 const socketio = require('socket.io')
 const spawn = require('threads').spawn
 const app = express()
+const socket_app = express()
 const path = require("path")
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const fileUpload = require('express-fileupload')
 const base64 = require('base64url')
 const http = require("http").Server(app)
+const socket_http = require('http').Server(socket_app)
 //Include Local API route
 const api = require('./app/routes/api')
 const {encrypt} = require('./app/encryption')
@@ -34,10 +37,15 @@ app.use(bodyParser.urlencoded({
 app.set("port", PORT) // Server uses port
 app.use('/api', api) // serve API routes on /api
 
+socket_app.get('/', (req, res) => {
+    res.json({msg: "HELLO"})
+})
+
 // Start server and listen on port
 try {
     const server = http.listen(PORT) // listen for req on port
-    const io = socketio(server) // open socket on server port
+    const socket_server = socket_http.listen(SOCKET_PORT)
+    const io = socketio(socket_server) // open socket on server port
     io.on('connection', (socket) => { // Socket connection
         console.log(`New Connection: ${socket.id}`)
         socket.on('ENCRYPT_BY_TEXT', (data) => {
@@ -178,7 +186,8 @@ try {
                 })
         })
     })
-    console.log(`Listening on port: ${PORT}`)
+    console.log(`FILE SERVER Listening on port: ${PORT}`)
+    console.log(`SOCKET SERVER Listening on port: ${SOCKET_PORT}`)
 } catch (e) {
     // Oh No! Something went wrong!
     console.error(`\n\n[ERROR] An Error has occurred:\n${e}`)

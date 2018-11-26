@@ -107,7 +107,7 @@
     export default {
         name: 'Decrypt',
         data: () => ({
-            socket: io('https://sofe3770.tk'),
+            socket: io('sofe3770api.tk'),
 
             showDecrypted: false,
 
