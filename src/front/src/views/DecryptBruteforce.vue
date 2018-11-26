@@ -139,7 +139,7 @@
                 this.key = data.key
             })
             this.socket.on('RESULT_DECRYPT_BRUTEFORCE_BY_FILE', (data) => {
-                this.decryptByTextLoading = false
+                this.decryptByFileLoading = false
                 this.showDecrypted = true
                 this.decryptedText = data.plainText
                 this.runtime = data.runtime
