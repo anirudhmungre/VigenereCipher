@@ -46,6 +46,7 @@ try {
     const server = http.listen(PORT) // listen for req on port
     const socket_server = socket_http.listen(SOCKET_PORT)
     const io = socketio(socket_server) // open socket on server port
+    io.origins('*:*')
     io.on('connection', (socket) => { // Socket connection
         console.log(`New Connection: ${socket.id}`)
         socket.on('ENCRYPT_BY_TEXT', (data) => {
