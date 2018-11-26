@@ -1,43 +1,185 @@
 "use strict"
-console.log(`Start`)
 const PORT = 3770
 const express = require("express")
+const socketio = require('socket.io')
+const spawn = require('threads').spawn
 const app = express()
 const path = require("path")
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
-const compression = require('compression')
 const fileUpload = require('express-fileupload')
+const base64 = require('base64url')
 const http = require("http").Server(app)
-console.log(`Imports`)
-
-const index = require('./app/routes/index')
+//Include Local API route
 const api = require('./app/routes/api')
-console.log(`Routes`)
+const {encrypt} = require('./app/encryption')
+const {decrypt} = require('./app/decryption')
+const {PSO} = require('./app/pso')
 
-// Server setup
-app.use(fileUpload())
+String.prototype.strip = function () {
+    return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
+}
+//Serve static files from public (VUE front-end)
 app.use(express.static(path.join(__dirname, "app", "public")))
-app.set("views", path.join(__dirname, "app", "views"))
-app.set("view engine", "jade")
-app.use(compression())
-app.use(helmet())
+// Server setup
+app.use(fileUpload()) // Allow file-upload to server
+app.use(helmet()) // Basic NODE security suite
 app.use(bodyParser.json({
-  limit: '512mb'
-}))
+    limit: '512mb'
+})) // Max size of body
 app.use(bodyParser.urlencoded({
-  limit: '512mb',
-  extended: true
-}))
-app.set("port", PORT)
-
-app.use('/', index)
-app.use('/api', api)
+    limit: '512mb',
+    extended: true
+})) // Max size of body
+app.set("port", PORT) // Server uses port
+app.use('/api', api) // serve API routes on /api
 
 // Start server and listen on port
 try {
-  http.listen(PORT)
-  console.log(`Listening on port: ${PORT}`)
+    const server = http.listen(PORT) // listen for req on port
+    const io = socketio(server) // open socket on server port
+    io.on('connection', (socket) => { // Socket connection
+        console.log(`New Connection: ${socket.id}`)
+        socket.on('ENCRYPT_BY_TEXT', (data) => {
+            let key = data.key.strip()
+            let plainText = data.plainText.strip()
+            let start_time = new Date().getTime()
+            let encrypted = encrypt(plainText, key)
+            let runtime = (new Date().getTime()) - start_time
+            socket.emit("RESULT_ENCRYPT_BY_TEXT", {
+                plainText: plainText,
+                enc: encrypted,
+                key: key,
+                runtime: runtime
+            })
+        })
+        socket.on('ENCRYPT_BY_FILE', (data) => {
+            let key = data.key.strip()
+            let fileData = base64.decode(data.fileBase64.split(',')[1])
+            let plainText = fileData.strip()
+            let start_time = new Date().getTime()
+            let encrypted = encrypt(plainText, key)
+            let runtime = (new Date().getTime()) - start_time
+            socket.emit("RESULT_ENCRYPT_BY_FILE", {
+                plainText: plainText,
+                enc: encrypted,
+                key: key,
+                runtime: runtime
+            })
+        })
+        socket.on('DECRYPT_BY_TEXT', (data) => {
+            let key = data.key.strip()
+            let enc = data.enc.strip()
+            let start_time = new Date().getTime()
+            let decrypted = decrypt(enc, key)
+            let runtime = (new Date().getTime()) - start_time
+            socket.emit("RESULT_DECRYPT_BY_TEXT", {
+                plainText: decrypted,
+                enc: enc,
+                key: key,
+                runtime: runtime
+            })
+        })
+        socket.on('DECRYPT_BY_FILE', (data) => {
+            let key = data.key.strip()
+            let fileData = base64.decode(data.fileBase64.split(',')[1])
+            let enc = fileData.strip()
+            let start_time = new Date().getTime()
+            let decrypted = decrypt(enc, key)
+            let runtime = (new Date().getTime()) - start_time
+            socket.emit("RESULT_DECRYPT_BY_FILE", {
+                plainText: decrypted,
+                enc: enc,
+                key: key,
+                runtime: runtime
+            })
+        })
+        socket.on('DECRYPT_BRUTEFORCE_BY_TEXT', (data) => {
+            let enc = data.enc.strip()
+            let start_time = new Date().getTime()
+            const thread = spawn('./app/bruteForce.js')
+            thread
+                .send({enc: enc})
+                .on('message', function (response) {
+                    let runtime = (new Date().getTime()) - start_time
+                    socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_TEXT", {
+                        plainText: decrypt(enc, response.key),
+                        enc: enc,
+                        key: response.key,
+                        runtime: runtime
+                    })
+                    thread.kill()
+                })
+                .on('error', function (error) {
+                    console.error('Worker errored:', error)
+                })
+                .on('exit', function () {
+                    console.log('Worker has been terminated.')
+                })
+        })
+        socket.on('DECRYPT_BRUTEFORCE_BY_FILE', (data) => {
+            let fileData = base64.decode(data.fileBase64.split(',')[1])
+            let enc = fileData.strip()
+            let start_time = new Date().getTime()
+            let key = PSO(enc, 100)
+            let runtime = (new Date().getTime()) - start_time
+            socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_FILE", {
+                plainText: decrypt(enc, key),
+                enc: enc,
+                key: key,
+                runtime: runtime
+            })
+        })
+        socket.on('DECRYPT_PSO_BY_TEXT', (data) => {
+            let enc = data.enc.strip()
+            let start_time = new Date().getTime()
+            const thread = spawn('./app/pso.js')
+            thread
+                .send({enc: enc})
+                .on('message', function (response) {
+                    let runtime = (new Date().getTime()) - start_time
+                    socket.emit("RESULT_DECRYPT_PSO_BY_TEXT", {
+                        plainText: decrypt(enc, response.key),
+                        enc: enc,
+                        key: response.key,
+                        runtime: runtime
+                    })
+                    thread.kill()
+                })
+                .on('error', function (error) {
+                    console.error('Worker errored:', error)
+                })
+                .on('exit', function () {
+                    console.log('Worker has been terminated.')
+                })
+        })
+        socket.on('DECRYPT_PSO_BY_FILE', (data) => {
+            let fileData = base64.decode(data.fileBase64.split(',')[1])
+            let enc = fileData.strip()
+            let start_time = new Date().getTime()
+            const thread = spawn('./app/pso.js')
+            thread
+                .send({enc: enc})
+                .on('message', function (response) {
+                    let runtime = (new Date().getTime()) - start_time
+                    socket.emit("RESULT_DECRYPT_PSO_BY_FILE", {
+                        plainText: decrypt(enc, response.key),
+                        enc: enc,
+                        key: response.key,
+                        runtime: runtime
+                    })
+                    thread.kill()
+                })
+                .on('error', function (error) {
+                    console.error('Worker errored:', error)
+                })
+                .on('exit', function () {
+                    console.log('Worker has been terminated.')
+                })
+        })
+    })
+    console.log(`Listening on port: ${PORT}`)
 } catch (e) {
-  console.error("\n\n[ERROR] An Error has occured!\n" + e)
+    // Oh No! Something went wrong!
+    console.error(`\n\n[ERROR] An Error has occurred:\n${e}`)
 }

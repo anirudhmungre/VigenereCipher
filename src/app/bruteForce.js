@@ -42,9 +42,8 @@ const bruteForce = (etxt) => {
             dtxt = decrypt.decrypt(etxt, testKey)
             freq = checkDec(dtxt)
             if (freq < 0.5 && freq > 0) {
-                console.log("Is this decrypted?\nKey: " + testKey + "\nText: " + dtxt)
-                // USER INPUT FOR YES OR NO
-                return dtxt
+                // console.log("Is this decrypted?\nKey: " + testKey + "\nText: " + dtxt)
+                return testKey
             }
             testKey = toString26(j, LETARR)
         }
@@ -54,4 +53,6 @@ const bruteForce = (etxt) => {
 // console.time("runtime")
 // bruteForce("VHBUSMTIGIILCSTOPEGTXUTVCSXQFLQMXVHBPGMJAMYONNDHVHXTWBUEUGAGGNVTYIVEWYOKFIGCNRQTAGRECNZWAZGTAGEGILBUHECNZWAZGILCVXTSTVIEGAGFRHDULVLTPGNCGXKTBUAFCZBPG")
 // console.timeEnd("runtime")
-exports.bruteForce = bruteForce
+module.exports = function (input, done) {
+    done({key: bruteForce(input.enc)})
+}
