@@ -106,7 +106,7 @@
     export default {
         name: 'Encrypt',
         data: () => ({
-            socket: io('sofe3770api.tk'),
+            socket: null,
 
             showEncrypted: false,
 
@@ -140,6 +140,7 @@
             runtime: ''
         }),
         mounted() {
+            this.socket = io.connect('https://sofe3770api.tk', {secure: true})
             this.socket.on('RESULT_ENCRYPT_BY_TEXT', (data) => {
                 this.encryptByTextLoading = false
                 this.showEncrypted = true

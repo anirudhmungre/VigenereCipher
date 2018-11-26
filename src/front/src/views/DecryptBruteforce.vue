@@ -99,7 +99,7 @@
     export default {
         name: 'Decrypt',
         data: () => ({
-            socket: io('sofe3770api.tk'),
+            socket: null,
 
             showDecrypted: false,
 
@@ -126,6 +126,7 @@
             runtime: ''
         }),
         mounted() {
+            this.socket = io.connect('https://sofe3770api.tk', {secure: true})
             this.socket.on('RESULT_DECRYPT_BRUTEFORCE_BY_TEXT', (data) => {
                 this.decryptByTextLoading = false
                 this.showDecrypted = true
