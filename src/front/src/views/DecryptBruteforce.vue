@@ -59,13 +59,35 @@
                 </v-card-text>
             </v-card>
         </v-flex>
-        <v-flex offset-sm3 sm6 v-if="showDecrypted" xs12>
+        <v-flex offset-xs1 v-if="showDecrypted" xs10>
             <v-card>
                 <v-card-title primary-title>
-                    <div>
-                        <h3 class="headline mb-0" color="primary">Decrypted Text</h3>
-                    </div>
+                    <h3 class="headline mb-0" color="primary">Decrypted Text</h3>
                 </v-card-title>
+                <v-card-text>
+                    <v-form>
+                        <v-textarea
+                                auto-grow
+                                box
+                                label="Decrypted Text"
+                                readonly
+                                v-model="decryptedText"
+                        ></v-textarea>
+                        <v-text-field
+                                box
+                                label="Key"
+                                readonly
+                                v-model="key"
+                        ></v-text-field>
+                        <v-text-field
+                                box
+                                label="Runtime"
+                                readonly
+                                suffix="miliseconds"
+                                v-model="runtime"
+                        ></v-text-field>
+                    </v-form>
+                </v-card-text>
             </v-card>
         </v-flex>
     </div>
@@ -98,25 +120,39 @@
             tab: null,
             fileName: '',
             fileUrl: '',
+
+            decryptedText: '',
+            key: '',
+            runtime: ''
         }),
         mounted() {
             this.socket.on('RESULT_DECRYPT_BRUTEFORCE_BY_TEXT', (data) => {
-                // something
+                this.decryptByTextLoading = false
+                this.showDecrypted = true
+                this.decryptedText = data.plainText
+                this.runtime = data.runtime
+                this.key = data.key
             })
             this.socket.on('RESULT_DECRYPT_BRUTEFORCE_BY_FILE', (data) => {
-                // something
+                this.decryptByTextLoading = false
+                this.showDecrypted = true
+                this.decryptedText = data.plainText
+                this.runtime = data.runtime
+                this.key = data.key
             })
         },
         methods: {
             socketDecryptByText() {
                 if (this.textDecryptValid) {
+                    this.decryptByTextLoading = true
                     this.socket.emit('DECRYPT_BRUTEFORCE_BY_TEXT', {
-                        plainText: this.textDecryptText
+                        enc: this.textDecryptText
                     })
                 }
             },
             socketDecryptByFile() {
                 if (this.fileDecryptValid) {
+                    this.decryptByFileLoading = true
                     this.socket.emit('DECRYPT_BRUTEFORCE_BY_FILE', {
                         fileBase64: this.fileUrl
                     })
