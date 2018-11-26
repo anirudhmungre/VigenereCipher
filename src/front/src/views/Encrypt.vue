@@ -106,7 +106,7 @@
     export default {
         name: 'Encrypt',
         data: () => ({
-            socket: io('localhost:3770'),
+            socket: io('https://sofe3770.tk'),
 
             showEncrypted: false,
 
