@@ -140,7 +140,7 @@
             runtime: ''
         }),
         mounted() {
-            this.socket = io.connect('https://sofe3770api.tk', {secure: true})
+            this.socket = io.connect('167.99.182.99:3771')
             this.socket.on('RESULT_ENCRYPT_BY_TEXT', (data) => {
                 this.encryptByTextLoading = false
                 this.showEncrypted = true
