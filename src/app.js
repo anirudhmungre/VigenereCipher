@@ -138,14 +138,25 @@ try {
             let fileData = base64.decode(data.fileBase64.split(',')[1])
             let enc = fileData.strip()
             let start_time = new Date().getTime()
-            let key = PSO(enc, 100)
-            let runtime = (new Date().getTime()) - start_time
-            socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_FILE", {
-                plainText: decrypt(enc, key),
-                enc: enc,
-                key: key,
-                runtime: runtime
-            })
+            const thread = spawn('./app/bruteForce.js')
+            thread
+                .send({enc: enc})
+                .on('message', function (response) {
+                    let runtime = (new Date().getTime()) - start_time
+                    socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_FILE", {
+                        plainText: decrypt(enc, response.key),
+                        enc: enc,
+                        key: response.key,
+                        runtime: runtime
+                    })
+                    thread.kill()
+                })
+                .on('error', function (error) {
+                    console.error('Worker errored:', error)
+                })
+                .on('exit', function () {
+                    console.log('Worker has been terminated.')
+                })
         })
         socket.on('DECRYPT_PSO_BY_TEXT', (data) => {
             let enc = data.enc.strip()

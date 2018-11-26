@@ -27,7 +27,9 @@
                                                 prepend-icon='text_format'
                                                 v-model="textDecryptText"
                                         ></v-textarea>
-                                        <v-btn @click="socketDecryptByText" block color="primary" large>Decrypt</v-btn>
+                                        <v-btn :disabled="decryptByTextLoading" @click="socketDecryptByText" block
+                                               color="primary" large>Decrypt
+                                        </v-btn>
                                     </v-form>
                                     <v-progress-linear :indeterminate="true"
                                                        v-if="decryptByTextLoading"></v-progress-linear>
@@ -48,7 +50,9 @@
                                                 style="display: none"
                                                 type="file"
                                         >
-                                        <v-btn @click="socketDecryptByFile" block color="primary" large>Decrypt</v-btn>
+                                        <v-btn :disabled="decryptByFileLoading" @click="socketDecryptByFile" block
+                                               color="primary" large>Decrypt
+                                        </v-btn>
                                     </v-form>
                                     <v-progress-linear :indeterminate="true"
                                                        v-if="decryptByFileLoading"></v-progress-linear>
