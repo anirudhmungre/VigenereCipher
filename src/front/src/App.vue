@@ -30,7 +30,7 @@
         </v-toolbar>
 
         <v-content>
-            <v-container grid-list-xl>
+            <v-container grid-list-xs>
                 <router-view/>
             </v-container>
         </v-content>

@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <v-flex offset-sm3 sm6 xs12>
+        <v-flex offset-xs1 xs10>
             <v-card class="mb-4">
                 <v-card-title primary-title>
                     <div>

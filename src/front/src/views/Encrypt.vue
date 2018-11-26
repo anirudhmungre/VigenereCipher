@@ -1,6 +1,6 @@
 <template>
     <div class="encrypt">
-        <v-flex offset-sm3 sm6 xs12>
+        <v-flex offset-xs1 xs10>
             <v-card class="mb-4">
                 <v-card-title primary-title>
                     <div>
@@ -23,7 +23,6 @@
                                                 auto-grow
                                                 box
                                                 label="Text to Encrypt"
-                                                name="input-7-1"
                                                 prepend-icon='text_format'
                                                 v-model="textEncryptText"
                                         ></v-textarea>
@@ -36,6 +35,8 @@
                                         ></v-text-field>
                                         <v-btn @click="socketEncryptByText" block color="primary" large>Encrypt</v-btn>
                                     </v-form>
+                                    <v-progress-linear :indeterminate="true"
+                                                       v-if="encryptByTextLoading"></v-progress-linear>
                                 </v-card-text>
                             </v-card>
                         </v-tab-item>
@@ -62,6 +63,8 @@
                                         ></v-text-field>
                                         <v-btn @click="socketEncryptByFile" block color="primary" large>Encrypt</v-btn>
                                     </v-form>
+                                    <v-progress-linear :indeterminate="true"
+                                                       v-if="encryptByFileLoading"></v-progress-linear>
                                 </v-card-text>
                             </v-card>
                         </v-tab-item>
@@ -69,13 +72,29 @@
                 </v-card-text>
             </v-card>
         </v-flex>
-        <v-flex offset-sm3 sm6 v-if="showEncrypted" xs12>
+        <v-flex offset-xs1 v-if="showEncrypted" xs10>
             <v-card>
                 <v-card-title primary-title>
-                    <div>
-                        <h3 class="headline mb-0" color="primary">Encrypted Text</h3>
-                    </div>
+                    <h3 class="headline mb-0" color="primary">Encrypted Text</h3>
                 </v-card-title>
+                <v-card-text>
+                    <v-form>
+                        <v-textarea
+                                auto-grow
+                                box
+                                label="Encrypted Text"
+                                readonly
+                                v-model="encryptedText"
+                        ></v-textarea>
+                        <v-text-field
+                                box
+                                label="Runtime"
+                                readonly
+                                suffix="miliseconds"
+                                v-model="runtime"
+                        ></v-text-field>
+                    </v-form>
+                </v-card-text>
             </v-card>
         </v-flex>
     </div>
@@ -100,6 +119,7 @@
             textEncryptKeyRules: [
                 v => !!v || 'Key is required',
             ],
+            encryptByTextLoading: false,
 
             fileEncryptValid: false,
             fileEncryptFile: '',
@@ -110,22 +130,34 @@
             fileEncryptKeyRules: [
                 v => !!v || 'Key is required',
             ],
+            encryptByFileLoading: false,
 
             tab: null,
             fileName: '',
             fileUrl: '',
+
+            encryptedText: '',
+            runtime: ''
         }),
         mounted() {
             this.socket.on('RESULT_ENCRYPT_BY_TEXT', (data) => {
-                // something
+                this.encryptByTextLoading = false
+                this.showEncrypted = true
+                this.encryptedText = data.enc
+                this.runtime = data.runtime
             })
             this.socket.on('RESULT_ENCRYPT_BY_FILE', (data) => {
-                // something
+                this.encryptByFileLoading = false
+                this.showEncrypted = true
+                this.encryptedText = data.enc
+                this.runtime = data.runtime
             })
         },
         methods: {
             socketEncryptByText() {
                 if (this.textEncryptValid) {
+                    this.encryptByTextLoading = true
+                    this.showEncrypted = false
                     this.socket.emit('ENCRYPT_BY_TEXT', {
                         plainText: this.textEncryptText,
                         key: this.textEncryptKey
@@ -134,6 +166,8 @@
             },
             socketEncryptByFile() {
                 if (this.fileEncryptValid) {
+                    this.encryptByFileLoading = true
+                    this.showEncrypted = false
                     this.socket.emit('ENCRYPT_BY_FILE', {
                         fileBase64: this.fileUrl,
                         key: this.fileEncryptKey
@@ -154,8 +188,6 @@
                     fr.readAsDataURL(files[0])
                     fr.addEventListener('load', () => {
                         this.fileUrl = fr.result
-                        // URL is base64 url of file data
-                        console.log(this.fileUrl)
                     })
                 } else {
                     this.fileName = ''
