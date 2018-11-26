@@ -70,7 +70,6 @@ base64id@1.0.0:
 base64url@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/base64url/-/base64url-3.0.1.tgz#6399d572e2bc3f90a9a8b22d5dbb0a32d33f788d"
-  integrity sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==
 
 basic-auth@~1.0.3:
   version "1.0.4"
@@ -213,6 +212,10 @@ compression@^1.7.3:
     safe-buffer "5.1.2"
     vary "~1.1.2"
 
+connect-history-api-fallback@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/connect-history-api-fallback/-/connect-history-api-fallback-1.5.0.tgz#b06873934bc5e344fef611a196a6faae0aee015a"
+
 constantinople@~3.0.1:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/constantinople/-/constantinople-3.0.2.tgz#4b945d9937907bcd98ee575122c3817516544141"
@@ -265,6 +268,10 @@ css@~1.0.8:
 dasherize@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/dasherize/-/dasherize-2.0.0.tgz#6d809c9cd0cf7bb8952d80fc84fa13d47ddb1308"
+
+dddos@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/dddos/-/dddos-0.1.2.tgz#416f07a312d3432370c24658cc016d095c44b381"
 
 debug@2.6.9:
   version "2.6.9"
@@ -371,7 +378,6 @@ etag@~1.8.1:
 eventemitter3@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-2.0.3.tgz#b5e1079b59fb5e1ba2771c0a993be060a58c99ba"
-  integrity sha1-teEHm1n7XhuidxwKmTvgYKWMmbo=
 
 expect-ct@0.1.1:
   version "0.1.1"
@@ -678,7 +684,6 @@ ms@2.0.0:
 native-promise-only@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/native-promise-only/-/native-promise-only-0.8.1.tgz#20a318c30cb45f71fe7adfbf7b21c99c1472ef11"
-  integrity sha1-IKMYwwy0X3H+et+/eyHJnBRy7xE=
 
 negotiator@0.6.1:
   version "0.6.1"
@@ -951,7 +956,6 @@ string_decoder@~0.10.x:
 threads@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/threads/-/threads-0.12.0.tgz#d8ae23d929fcb8274a585b7bc333324fdfacef67"
-  integrity sha512-4B7hd61lDsVW1Z/+FAVX7D9QbiQYUbtGMHVkkwWT/nKPKas8u4FEc+Rg8E8h2erhNTQGNqNJ0TsholmhpKNPRg==
   dependencies:
     eventemitter3 "^2.0.2"
     native-promise-only "^0.8.1"

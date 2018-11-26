@@ -20,6 +20,8 @@
     "base64url": "^3.0.1",
     "body-parser": "~1.15.2",
     "compression": "^1.7.3",
+    "connect-history-api-fallback": "^1.5.0",
+    "dddos": "^0.1.2",
     "express": "^4.16.2",
     "express-fileupload": "^1.0.0",
     "helmet": "^3.15.0",

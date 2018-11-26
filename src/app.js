@@ -8,8 +8,10 @@ const app = express()
 const socket_app = express()
 const path = require("path")
 const bodyParser = require('body-parser')
+const history = require('connect-history-api-fallback')
 const helmet = require('helmet')
-const fileUpload = require('express-fileupload')
+const DDoS = require('dddos')
+const {cors} = require('./app/components/cors')
 const base64 = require('base64url')
 const http = require("http").Server(app)
 const socket_http = require('http').Server(socket_app)
@@ -22,10 +24,16 @@ const {PSO} = require('./app/pso')
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
 }
-//Serve static files from public (VUE front-end)
-app.use(express.static(path.join(__dirname, "app", "public")))
 // Server setup
-app.use(fileUpload()) // Allow file-upload to server
+app.use(cors())
+app.use(history())
+app.use(new DDoS({
+    maxWeight: 5,
+    errorData: {
+        "response": 429,
+        "message": "GEEZ, that\'s a few too many requests... slow down."
+    }
+}).express())
 app.use(helmet()) // Basic NODE security suite
 app.use(bodyParser.json({
     limit: '512mb'
@@ -35,7 +43,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 })) // Max size of body
 app.set("port", PORT) // Server uses port
-app.use('/api', api) // serve API routes on /api
+// app.use('/api', api) // serve API routes on /api
 
 socket_app.get('/', (req, res) => {
     res.json({msg: "HELLO"})
@@ -187,7 +195,6 @@ try {
                 })
         })
     })
-    console.log(`FILE SERVER Listening on port: ${PORT}`)
     console.log(`SOCKET SERVER Listening on port: ${SOCKET_PORT}`)
 } catch (e) {
     // Oh No! Something went wrong!
