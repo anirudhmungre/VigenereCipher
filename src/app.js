@@ -24,6 +24,10 @@ const {PSO} = require('./app/pso')
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
 }
+
+String.prototype.smart = function () {
+    return (this.length > 300 ? this.substring(0, 301) : this)
+}
 // Server setup
 app.use(cors())
 app.use(history())
@@ -116,7 +120,7 @@ try {
             let start_time = new Date().getTime()
             const thread = spawn('./app/bruteForce.js')
             thread
-                .send({enc: enc})
+                .send({enc: enc.smart()})
                 .on('message', function (response) {
                     let runtime = (new Date().getTime()) - start_time
                     socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_TEXT", {
@@ -140,7 +144,7 @@ try {
             let start_time = new Date().getTime()
             const thread = spawn('./app/bruteForce.js')
             thread
-                .send({enc: enc})
+                .send({enc: enc.smart()})
                 .on('message', function (response) {
                     let runtime = (new Date().getTime()) - start_time
                     socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_FILE", {
@@ -163,7 +167,7 @@ try {
             let start_time = new Date().getTime()
             const thread = spawn('./app/pso.js')
             thread
-                .send({enc: enc})
+                .send({enc: enc.smart()})
                 .on('message', function (response) {
                     let runtime = (new Date().getTime()) - start_time
                     socket.emit("RESULT_DECRYPT_PSO_BY_TEXT", {
@@ -187,7 +191,7 @@ try {
             let start_time = new Date().getTime()
             const thread = spawn('./app/pso.js')
             thread
-                .send({enc: enc})
+                .send({enc: enc.smart()})
                 .on('message', function (response) {
                     let runtime = (new Date().getTime()) - start_time
                     socket.emit("RESULT_DECRYPT_PSO_BY_FILE", {
