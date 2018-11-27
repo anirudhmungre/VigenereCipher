@@ -31,7 +31,7 @@ const bruteForce = (etxt) => {
     const KEYLENS = fried.getEstKeyLen(etxt)
     for (let i = 0; i < KEYLENS.length; i++) {
         kLen = KEYLENS[i]
-        // console.log(kLen)
+        console.log(kLen)
         start = 0
         for (let j = kLen - 1; j >= 0; j--) {
             start += 26 ** j
