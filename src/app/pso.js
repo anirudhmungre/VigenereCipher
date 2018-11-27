@@ -50,7 +50,7 @@ function psoMain(etxt, numParticles) {
     prevBest = "",
     tCounter = 0
 
-    console.log(friedman.getEstKeyLen(etxt))
+    // console.log(friedman.getEstKeyLen(etxt))
     // First run: Initializing the global best
     let particle = particleLst[0],
         dtxt = decrypt(etxt, particle.x.join(""))
