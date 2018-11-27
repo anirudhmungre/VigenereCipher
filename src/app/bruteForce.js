@@ -37,7 +37,7 @@ const bruteForce = (etxt) => {
             start += 26 ** j
         }
         testKey = "A".repeat(kLen)
-        start = 502808
+        start = 502807
         testKey = "ABOTT"
         console.log("THING")
         for (let j = start + 1; testKey.length == kLen; j++) {
