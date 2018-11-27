@@ -31,7 +31,7 @@ const bruteForce = (etxt) => {
     const KEYLENS = fried.getEstKeyLen(etxt)
     for (let i = 0; i < KEYLENS.length; i++) {
         kLen = KEYLENS[i]
-        console.log(kLen)
+        console.log(kLen[i])
         start = 0
         for (let j = kLen - 1; j >= 0; j--) {
             start += 26 ** j
@@ -39,6 +39,7 @@ const bruteForce = (etxt) => {
         testKey = "A".repeat(kLen)
         start = 502808
         testKey = "ABOTT"
+        console.log("THING")
         for (let j = start + 1; testKey.length == kLen; j++) {
             dtxt = decrypt.decrypt(etxt, testKey)
             freq = checkDec(dtxt)
