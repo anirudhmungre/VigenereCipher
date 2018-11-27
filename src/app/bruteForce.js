@@ -37,8 +37,8 @@ const bruteForce = (etxt) => {
             start += 26 ** j
         }
         testKey = "A".repeat(kLen)
-        // start = 502807
-        // testKey = "ABOTT"
+        start = 344218
+        testKey = "SOEE"
         console.log("THING")
         for (let j = start + 1; testKey.length == kLen; j++) {
             dtxt = decrypt.decrypt(etxt, testKey)
