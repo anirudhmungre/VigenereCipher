@@ -38,7 +38,7 @@ const bruteForce = (etxt) => {
         }
         testKey = "A".repeat(kLen)
         for (let j = start + 1; testKey.length == kLen; j++) {
-            // console.log(testKey)
+            console.log(testKey)
             dtxt = decrypt.decrypt(etxt, testKey)
             freq = checkDec(dtxt)
             if (freq < 0.5 && freq > 0) {

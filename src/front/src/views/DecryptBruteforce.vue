@@ -20,7 +20,6 @@
                                     <v-form v-model="textDecryptValid">
                                         <v-textarea
                                                 :rules="textDecryptTextRules"
-                                                auto-grow
                                                 box
                                                 label="Text to Decrypt"
                                                 name="input-7-1"
@@ -71,7 +70,6 @@
                 <v-card-text>
                     <v-form>
                         <v-textarea
-                                auto-grow
                                 box
                                 label="Decrypted Text"
                                 readonly

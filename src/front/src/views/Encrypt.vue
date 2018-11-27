@@ -20,7 +20,6 @@
                                     <v-form v-model="textEncryptValid">
                                         <v-textarea
                                                 :rules="textEncryptTextRules"
-                                                auto-grow
                                                 box
                                                 label="Text to Encrypt"
                                                 prepend-icon='text_format'
@@ -80,7 +79,6 @@
                 <v-card-text>
                     <v-form>
                         <v-textarea
-                                auto-grow
                                 box
                                 label="Encrypted Text"
                                 readonly
