@@ -31,14 +31,14 @@ const bruteForce = (etxt) => {
     const KEYLENS = fried.getEstKeyLen(etxt)
     for (let i = 0; i < KEYLENS.length; i++) {
         kLen = KEYLENS[i]
-        console.log(kLen[i])
+        console.log(kLen)
         start = 0
         for (let j = kLen - 1; j >= 0; j--) {
             start += 26 ** j
         }
         testKey = "A".repeat(kLen)
-        start = 502807
-        testKey = "ABOTT"
+        // start = 502807
+        // testKey = "ABOTT"
         console.log("THING")
         for (let j = start + 1; testKey.length == kLen; j++) {
             dtxt = decrypt.decrypt(etxt, testKey)
