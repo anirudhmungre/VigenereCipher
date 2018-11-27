@@ -37,10 +37,12 @@ const bruteForce = (etxt) => {
             start += 26 ** j
         }
         testKey = "A".repeat(kLen)
+        start = 502808
+        testKey = "ABOTT"
         for (let j = start + 1; testKey.length == kLen; j++) {
-            // console.log(testKey)
             dtxt = decrypt.decrypt(etxt, testKey)
             freq = checkDec(dtxt)
+            console.log(testKey + " -> " + freq)
             if (freq < 0.5 && freq > 0) {
                 // console.log("Is this decrypted?\nKey: " + testKey + "\nText: " + dtxt)
                 return testKey
