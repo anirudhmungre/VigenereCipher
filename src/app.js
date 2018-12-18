@@ -1,5 +1,5 @@
 "use strict"
-const SOCKET_PORT = 3771
+const SOCKET_PORT = 3770
 const Express = require("express")
 const SocketIO = require('socket.io')
 const spawn = require('threads').spawn
@@ -71,12 +71,15 @@ const socket_decrypt = (encryptedText, key) => {
     }
 }
 
-const socket_thread_bruteforce = (encryptedText, callback) => {
+const socket_thread_bruteforce = (socket, encryptedText, callback) => {
     encryptedText = encryptedText.strip()
     let start_time = new Date().getTime()
     const thread = spawn('./app/bruteForce.js')
+    socket.runningThreads.push(thread)
     thread
-        .send({enc: encryptedText.smart()})
+        .send({
+            enc: encryptedText.smart()
+        })
         .on('message', function (response) {
             callback(
                 decrypt(encryptedText, response.key),
@@ -95,12 +98,15 @@ const socket_thread_bruteforce = (encryptedText, callback) => {
         })
 }
 
-const socket_thread_pso = (encryptedText, callback) => {
+const socket_thread_pso = (socket, encryptedText, callback) => {
     encryptedText = encryptedText.strip()
     let start_time = new Date().getTime()
     const thread = spawn('./app/pso.js')
+    socket.runningThreads.push(thread)
     thread
-        .send({enc: encryptedText.smart()})
+        .send({
+            enc: encryptedText.smart()
+        })
         .on('message', function (response) {
             callback(
                 decrypt(encryptedText, response.key),
@@ -125,7 +131,19 @@ try {
     const io = SocketIO(socket_server) // open socket on server port
     io.origins('*:*')
     io.on('connection', (socket) => { // Socket connection
+        socket.runningThreads = []
         console.log(`New Connection: ${socket.id}`)
+        socket.on('disconnect', () => {
+            console.log(`Disconnect: ${socket.id}`)
+        })
+        socket.on('STOP_ALL_PROCESS', () => {
+            socket.runningThreads.forEach(th => {
+                th.kill()
+                console.log(`Killing thread: ${th}`)
+            })
+            socket.runningThreads = []
+            console.log(`STOP`)
+        })
         socket.on('ENCRYPT_BY_TEXT', (data) => {
             socket.emit("RESULT_ENCRYPT_BY_TEXT",
                 socket_encrypt(data.plainText, data.key)
@@ -147,7 +165,7 @@ try {
             )
         })
         socket.on('DECRYPT_BRUTEFORCE_BY_TEXT', (data) => {
-            socket_thread_bruteforce(data.enc,
+            socket_thread_bruteforce(socket, data.enc,
                 (plainText, encryptedText, key, runtime) => {
                     socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_TEXT", {
                         plainText: plainText,
@@ -158,7 +176,7 @@ try {
                 })
         })
         socket.on('DECRYPT_BRUTEFORCE_BY_FILE', (data) => {
-            socket_thread_bruteforce(base64.decode(data.fileBase64.split(',')[1]),
+            socket_thread_bruteforce(socket, base64.decode(data.fileBase64.split(',')[1]),
                 (plainText, encryptedText, key, runtime) => {
                     socket.emit("RESULT_DECRYPT_BRUTEFORCE_BY_FILE", {
                         plainText: plainText,
@@ -169,7 +187,7 @@ try {
                 })
         })
         socket.on('DECRYPT_PSO_BY_TEXT', (data) => {
-            socket_thread_pso(data.enc,
+            socket_thread_pso(socket, data.enc,
                 (plainText, encryptedText, key, runtime) => {
                     socket.emit("RESULT_DECRYPT_PSO_BY_TEXT", {
                         plainText: plainText,
@@ -180,7 +198,7 @@ try {
                 })
         })
         socket.on('DECRYPT_PSO_BY_FILE', (data) => {
-            socket_thread_pso(base64.decode(data.fileBase64.split(',')[1]),
+            socket_thread_pso(socket, base64.decode(data.fileBase64.split(',')[1]),
                 (plainText, encryptedText, key, runtime) => {
                     socket.emit("RESULT_DECRYPT_PSO_BY_FILE", {
                         plainText: plainText,

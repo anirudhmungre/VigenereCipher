@@ -137,8 +137,12 @@
             encryptedText: '',
             runtime: ''
         }),
+        beforeDestroy() {
+            this.socket.emit(`STOP_ALL_PROCESS`)
+            this.socket.disconnect()
+        },
         mounted() {
-            this.socket = io.connect('sofe3770api.tk')
+            this.socket = io.connect(this.$socketPath)
             this.socket.on('RESULT_ENCRYPT_BY_TEXT', (data) => {
                 this.encryptByTextLoading = false
                 this.showEncrypted = true

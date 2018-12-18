@@ -127,8 +127,12 @@
             key: '',
             runtime: ''
         }),
+        beforeDestroy() {
+            this.socket.emit(`STOP_ALL_PROCESS`)
+            this.socket.disconnect()
+        },
         mounted() {
-            this.socket = io.connect('sofe3770api.tk')
+            this.socket = io.connect(this.$socketPath)
             this.socket.on('RESULT_DECRYPT_PSO_BY_TEXT', (data) => {
                 this.decryptByTextLoading = false
                 this.showDecrypted = true
@@ -148,6 +152,7 @@
             socketDecryptByText() {
                 if (this.textDecryptValid) {
                     this.decryptByTextLoading = true
+                    this.showDecrypted = false
                     this.socket.emit('DECRYPT_PSO_BY_TEXT', {
                         enc: this.textDecryptText
                     })
@@ -156,6 +161,7 @@
             socketDecryptByFile() {
                 if (this.fileDecryptValid) {
                     this.decryptByFileLoading = true
+                    this.showDecrypted = false
                     this.socket.emit('DECRYPT_PSO_BY_FILE', {
                         fileBase64: this.fileUrl
                     })
