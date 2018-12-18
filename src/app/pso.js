@@ -1,7 +1,7 @@
 "use strict"
-let { decrypt } = require('./decryption'),
-    { findMonogramSum } = require('./monogram'),
-    { findBigramSum } = require('./bigrams'),
+let {decrypt} = require('./decryption'),
+    {findMonogramSum} = require('./monogram'),
+    {findBigramSum} = require('./bigrams'),
     particles = require('./initializePso'),
     friedman = require('./friedman')
 
@@ -19,17 +19,17 @@ function updateVelocity(particle, gBestKey, pBest) {
     for (let i = 0; i < particle.v.length; i++) {
         particle.rand1 = Math.random() * (1 - 0) + 0
         particle.rand2 = Math.random() * (1 - 0) + 0
-        particle.v[i] = (Math.floor(particle.w * particle.v[i] + ( particle.c1 * particle.r1 * (subtractChar(pBest[i], particle.x[i])) ) + ( particle.c2 * particle.r2 * (subtractChar(gBestKey[i], particle.x[i])) )) % 26)
+        particle.v[i] = (Math.floor(particle.w * particle.v[i] + (particle.c1 * particle.r1 * (subtractChar(pBest[i], particle.x[i]))) + (particle.c2 * particle.r2 * (subtractChar(gBestKey[i], particle.x[i])))) % 26)
     }
 }
 
 // Only call this function AFTER updating the velocity of a particle
 function updatePosition(particle) {
     let xp = particle.x,
-    vel = particle.v
+        vel = particle.v
     for (let i = 0; i < xp.length; i++) {
         if (vel[i] < 0) {
-            xp[i] = String.fromCharCode( (((xp[i].charCodeAt(0) - 65)  + vel[i] + 26) % 26) + 65)
+            xp[i] = String.fromCharCode((((xp[i].charCodeAt(0) - 65) + vel[i] + 26) % 26) + 65)
         } else {
             xp[i] = String.fromCharCode(((xp[i].charCodeAt(0) - 65) + vel[i]) % 26 + 65)
 
@@ -45,10 +45,10 @@ function updateGBest(particleLst, gBestNew) {
 
 function psoMain(etxt, numParticles) {
     let particleLst = particles.generateParticles(numParticles, friedman.getEstKeyLen(etxt)[0]),
-    gBestFitness = 100,
-    gBestKey = "",
-    prevBest = "",
-    tCounter = 0
+        gBestFitness = 100,
+        gBestKey = "",
+        prevBest = "",
+        tCounter = 0
 
     // console.log(friedman.getEstKeyLen(etxt))
     // First run: Initializing the global best
@@ -65,8 +65,8 @@ function psoMain(etxt, numParticles) {
         for (let j = 0; j < particleLst.length; j++) {
 
             let particle = particleLst[j],
-            dtxt = "",
-            fitness
+                dtxt = "",
+                fitness
 
             dtxt = decrypt(etxt, particle.x.join(""))
             fitness = findFitness(dtxt)

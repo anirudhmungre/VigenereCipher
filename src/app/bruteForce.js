@@ -1,6 +1,5 @@
 "use strict"
 const fried = require(__dirname + '/friedman.js')
-const fs = require("fs")
 const monogram = require(__dirname + '/monogram.js')
 const bigram = require(__dirname + '/bigrams.js')
 const decrypt = require(__dirname + '/decryption.js')
@@ -8,7 +7,9 @@ const decrypt = require(__dirname + '/decryption.js')
 const toString26 = (num, LETARR) => {
     let decremented, quotient, remainder
     let result = ''
-    if (num < 1) { return result }
+    if (num < 1) {
+        return result
+    }
     quotient = num, remainder
     while (quotient !== 0) {
         decremented = quotient - 1

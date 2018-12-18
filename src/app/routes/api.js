@@ -4,10 +4,10 @@ var router = express.Router()
 var pool = workerpool.pool()
 
 // Local requires
-const { encrypt } = require('../encryption')
-const { decrypt } = require('../decryption')
-const { PSO } = require('../pso')
-const { fried } = require('../friedman')
+const {encrypt} = require('../encryption')
+const {decrypt} = require('../decryption')
+const {PSO} = require('../pso')
+const {fried} = require('../friedman')
 
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
@@ -17,36 +17,36 @@ router.get("/", (req, res) => {
     pool.exec(function () {
         return false
     })
-    .then(function (result) {
-        return res.json({
-            "response": 200,
-            "message": "Welcome to the home page of the API!"
+        .then(function (result) {
+            return res.json({
+                "response": 200,
+                "message": "Welcome to the home page of the API!"
+            })
         })
-    })
-    .catch(function (err) {
-        console.error(err)
-    })
-    .then(function () {
-        pool.terminate()
-    })
+        .catch(function (err) {
+            console.error(err)
+        })
+        .then(function () {
+            pool.terminate()
+        })
 })
 
 router.get("/fried/:text", (req, res) => {
     let txt = req.params.text.strip()
     pool.exec(fried, [txt])
-    .then(function (result) {
-        return res.json({
-            "response": 200,
-            "fried": result,
-            "text": txt
+        .then(function (result) {
+            return res.json({
+                "response": 200,
+                "fried": result,
+                "text": txt
+            })
         })
-    })
-    .catch(function (err) {
-        console.error(err)
-    })
-    .then(function () {
-        pool.terminate()
-    })
+        .catch(function (err) {
+            console.error(err)
+        })
+        .then(function () {
+            pool.terminate()
+        })
 })
 
 router.post("/do-encrypt", (req, res) => {
