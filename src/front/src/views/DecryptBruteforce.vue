@@ -99,7 +99,7 @@
     import io from 'socket.io-client'
 
     export default {
-        name: 'Decrypt',
+        name: 'Decrypt_Brute',
         data: () => ({
             socket: null,
 

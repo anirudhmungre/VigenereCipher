@@ -1,12 +1,10 @@
 "use strict"
-const PORT = 3770
 const SOCKET_PORT = 3771
-const express = require("express")
-const socketio = require('socket.io')
+const Express = require("express")
+const SocketIO = require('socket.io')
 const spawn = require('threads').spawn
-const socket_app = express()
+const socket_app = Express()
 const bodyParser = require('body-parser')
-const history = require('connect-history-api-fallback')
 const helmet = require('helmet')
 const DDoS = require('dddos')
 const {cors} = require('./app/components/cors')
@@ -15,6 +13,7 @@ const socket_http = require('http').Server(socket_app)
 //Include Local API route
 const {encrypt} = require('./app/encryption')
 const {decrypt} = require('./app/decryption')
+
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
 }
@@ -25,7 +24,6 @@ String.prototype.smart = function () {
 
 // Server setup
 socket_app.use(cors())
-socket_app.use(history())
 socket_app.use(new DDoS({
     maxWeight: 5,
     errorData: {
@@ -124,7 +122,7 @@ const socket_thread_pso = (encryptedText, callback) => {
 // Start server and listen on port
 try {
     const socket_server = socket_http.listen(SOCKET_PORT)
-    const io = socketio(socket_server) // open socket on server port
+    const io = SocketIO(socket_server) // open socket on server port
     io.origins('*:*')
     io.on('connection', (socket) => { // Socket connection
         console.log(`New Connection: ${socket.id}`)
