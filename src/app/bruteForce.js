@@ -1,5 +1,4 @@
 "use strict"
-// const fs = require("fs") // Import file sync
 const fried = require(__dirname + '/friedman.js') // Import the friedman module
 const monogram = require(__dirname + '/monogram.js') // Import the monogram module
 const bigram = require(__dirname + '/bigrams.js') // Import the bigram module
@@ -9,7 +8,9 @@ const toString26 = (num, LETARR) => {
     // Changes decimal base 10 number to letter base 26 number
     let decremented, quotient, remainder
     let result = ''
-    if (num < 1) { return result }
+    if (num < 1) {
+        return result
+    }
     quotient = num, remainder
     while (quotient !== 0) {
         decremented = quotient - 1

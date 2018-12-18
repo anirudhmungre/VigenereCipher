@@ -35,7 +35,7 @@ function findBigramSum(dtxt, w) {
             mOccurences[bigrams[i]] = 0
         }
         ++mOccurences[bigrams[i]]
-            ++numEntries
+        ++numEntries
     }
 
     for (let j of Object.keys(tOccurences)) {
