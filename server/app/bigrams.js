@@ -2,6 +2,7 @@
 const fs = require('fs')
 const fileData = fs.readFileSync(__dirname + '/tst.txt', 'utf-8')
 
+// Finds all possible bigrams from a decrypted text string and returns them in a list
 function findBigrams(dtxt) {
     let arrBigrams = []
     for (let i = 0; i < (dtxt.length - 1); i++) {
@@ -10,6 +11,7 @@ function findBigrams(dtxt) {
     return arrBigrams
 }
 
+// Builds a key value pair set corresponding to all the bigrams and their frequencies in the English language
 function buildTopOccurences() {
     let arrFreq = fileData.split('\n').map(function (sp) {
         return sp.split(' ')
@@ -23,6 +25,7 @@ function buildTopOccurences() {
     return tOccurences
 }
 
+// Finds the bigram component sum of frequencies from the given decrypted text
 function findBigramSum(dtxt, w) {
     let bigrams = findBigrams(dtxt),
         mOccurences = {},
