@@ -18,16 +18,12 @@
                             <v-card flat>
                                 <v-card-text>
                                     <v-form v-model="textDecryptValid">
-                                        <v-textarea
-                                                :rules="textDecryptTextRules"
-                                                box
-                                                label="Text to Decrypt"
-                                                name="input-7-1"
-                                                prepend-icon='text_format'
-                                                v-model="textDecryptText"
-                                        ></v-textarea>
+                                        <v-textarea :rules="textDecryptTextRules" box label="Text to Decrypt"
+                                                    name="input-7-1" prepend-icon='text_format'
+                                                    v-model="textDecryptText"></v-textarea>
                                         <v-btn :disabled="decryptByTextLoading" @click="socketDecryptByText" block
-                                               color="primary" large>Decrypt
+                                               color="primary" large>
+                                            Decrypt
                                         </v-btn>
                                     </v-form>
                                     <v-progress-linear :indeterminate="true"
@@ -42,15 +38,11 @@
                                         <v-text-field :rules="fileDecryptFileRules" @click='pickFile' box
                                                       label="Select File" prepend-icon='attach_file'
                                                       v-model='fileName'></v-text-field>
-                                        <input
-                                                @change="onFilePicked"
-                                                accept=".txt"
-                                                ref="image"
-                                                style="display: none"
-                                                type="file"
-                                        >
+                                        <input @change="onFilePicked" accept=".txt" ref="image" style="display: none"
+                                               type="file">
                                         <v-btn :disabled="decryptByFileLoading" @click="socketDecryptByFile" block
-                                               color="primary" large>Decrypt
+                                               color="primary" large>
+                                            Decrypt
                                         </v-btn>
                                     </v-form>
                                     <v-progress-linear :indeterminate="true"
@@ -69,25 +61,10 @@
                 </v-card-title>
                 <v-card-text>
                     <v-form>
-                        <v-textarea
-                                box
-                                label="Decrypted Text"
-                                readonly
-                                v-model="decryptedText"
-                        ></v-textarea>
-                        <v-text-field
-                                box
-                                label="Key"
-                                readonly
-                                v-model="key"
-                        ></v-text-field>
-                        <v-text-field
-                                box
-                                label="Runtime"
-                                readonly
-                                suffix="miliseconds"
-                                v-model="runtime"
-                        ></v-text-field>
+                        <v-textarea box label="Decrypted Text" readonly v-model="decryptedText"></v-textarea>
+                        <v-text-field box label="Key" readonly v-model="key"></v-text-field>
+                        <v-text-field box label="Runtime" readonly suffix="miliseconds"
+                                      v-model="runtime"></v-text-field>
                     </v-form>
                 </v-card-text>
             </v-card>
@@ -102,27 +79,18 @@
         name: 'Decrypt_Brute',
         data: () => ({
             socket: null,
-
             showDecrypted: false,
-
             textDecryptValid: false,
             textDecryptText: '',
-            textDecryptTextRules: [
-                v => !!v || 'Text is required',
-            ],
+            textDecryptTextRules: [v => !!v || 'Text is required'],
             decryptByTextLoading: false,
-
             fileDecryptValid: false,
             fileDecryptFile: '',
-            fileDecryptFileRules: [
-                v => !!v || 'File is required',
-            ],
+            fileDecryptFileRules: [v => !!v || 'File is required'],
             decryptByFileLoading: false,
-
             tab: null,
             fileName: '',
             fileUrl: '',
-
             decryptedText: '',
             key: '',
             runtime: ''

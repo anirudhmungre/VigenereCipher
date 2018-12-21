@@ -22,7 +22,6 @@ String.prototype.smart = function () {
     return (this.length > 300 ? this.substring(0, 301) : this)
 }
 
-// Server setup
 socket_app.use(cors())
 socket_app.use(new DDoS({
     maxWeight: 5,
@@ -31,15 +30,15 @@ socket_app.use(new DDoS({
         "message": "GEEZ, that\'s a few too many requests... slow down."
     }
 }).express())
-socket_app.use(helmet()) // Basic NODE security suite
+socket_app.use(helmet())
 socket_app.use(bodyParser.json({
     limit: '512mb'
-})) // Max size of body
+}))
 socket_app.use(bodyParser.urlencoded({
     limit: '512mb',
     extended: true
-})) // Max size of body
-socket_app.set("port", SOCKET_PORT) // Server uses port
+}))
+socket_app.set("port", SOCKET_PORT)
 
 socket_app.get('/', (req, res) => {
     res.json({msg: "HELLO"})
@@ -49,7 +48,7 @@ const socket_encrypt = (plainText, key) => {
     key = key.strip()
     plainText = plainText.strip()
     let start_time = new Date().getTime()
-    let encrypted = encrypt(plainText, key) // This is a blocking function
+    let encrypted = encrypt(plainText, key)
     return {
         plainText: plainText,
         enc: encrypted,
@@ -86,7 +85,7 @@ const socket_thread_bruteforce = (socket, encryptedText, callback) => {
                 encryptedText,
                 response.key,
                 (new Date().getTime()) - start_time
-            ) // (plaintext, encryptedText, key, runtime)
+            )
             thread.kill()
         })
         .on('error', function (error) {
@@ -113,7 +112,7 @@ const socket_thread_pso = (socket, encryptedText, callback) => {
                 encryptedText,
                 response.key,
                 (new Date().getTime()) - start_time
-            ) // (plaintext, encryptedText, key, runtime)
+            )
             thread.kill()
         })
         .on('error', function (error) {
@@ -128,9 +127,9 @@ const socket_thread_pso = (socket, encryptedText, callback) => {
 // Start server and listen on port
 try {
     const socket_server = socket_http.listen(SOCKET_PORT)
-    const io = SocketIO(socket_server) // open socket on server port
+    const io = SocketIO(socket_server)
     io.origins('*:*')
-    io.on('connection', (socket) => { // Socket connection
+    io.on('connection', (socket) => {
         socket.runningThreads = []
         console.log(`New Connection: ${socket.id}`)
         socket.on('disconnect', () => {
@@ -211,6 +210,5 @@ try {
     })
     console.log(`SOCKET SERVER Listening on port: ${SOCKET_PORT}`)
 } catch (e) {
-    // Oh No! Something went wrong!
     console.error(`\n\n[ERROR] An Error has occurred:\n${e}`)
 }
