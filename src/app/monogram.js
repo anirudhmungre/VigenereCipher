@@ -2,6 +2,7 @@
 const fs = require("fs")
 const fileData = fs.readFileSync(__dirname + "/CharOccurences.txt", "utf-8")
 
+// Finds all occuring monograms within the decrypted text, returning a list with the number of occurences of each
 function findMonograms(dtxt) {
     let arr = (new Array(27)).fill(0),
         letter = 0
@@ -14,6 +15,7 @@ function findMonograms(dtxt) {
     return arr
 }
 
+// Finds the frequency of each of the monograms found within the decrypted text
 function findFrequencies(dtxt) {
     let arr = findMonograms(dtxt)
     for (let i = 0; i < arr.length - 1; i++) {
@@ -22,6 +24,7 @@ function findFrequencies(dtxt) {
     return arr
 }
 
+// Reads all the frequencies of each letter from the English language into an array corresponding in index from A-Z [0-25]
 function readFrequency() {
     let arrFreq = fileData.split('\n')
     for (let i = 0; i < arrFreq.length; i++) {
@@ -30,6 +33,7 @@ function readFrequency() {
     return arrFreq
 }
 
+// Finds the monogram component sum of frequencies from the decrypted text
 function findMonogramSum(dtxt, w) {
     let mFrequencies = findFrequencies(dtxt),
         sFrequencies = readFrequency(),
