@@ -138,7 +138,6 @@ try {
         socket.on('STOP_ALL_PROCESS', () => {
             socket.runningThreads.forEach(th => {
                 th.kill()
-                console.log(`Killing thread: ${th}`)
             })
             socket.runningThreads = []
             console.log(`STOP`)

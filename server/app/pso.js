@@ -1,9 +1,9 @@
 "use strict"
-let {decrypt} = require('./decryption'),
-    {findMonogramSum} = require('./monogram'),
-    {findBigramSum} = require('./bigrams'),
-    particles = require('./initializePso'),
-    friedman = require('./friedman')
+let {decrypt} = require(__dirname + '/decryption'),
+    {findMonogramSum} = require(__dirname + '/monogram'),
+    {findBigramSum} = require(__dirname + '/bigrams'),
+    particles = require(__dirname + '/initializePso'),
+    friedman = require(__dirname + '/friedman')
 
 // Finds the fitness value of the particular key value through the decrypted text
 // Accomplishes this by leveraging the use of Monogram.js and Bigram.js respectively
@@ -53,6 +53,7 @@ function updateGBest(particleLst, gBestNew) {
 // Takes in the encrypted text and number of particles; Returns the suggested key
 function psoMain(etxt, numParticles) {
     // Initialization of variables, including generation of particle list
+    console.log(friedman.getEstKeyLen(etxt)[0])
     let particleLst = particles.generateParticles(numParticles, friedman.getEstKeyLen(etxt)[0]),
         gBestFitness = 100,
         gBestKey = "",
@@ -67,7 +68,7 @@ function psoMain(etxt, numParticles) {
     gBestFitness = findFitness(dtxt)
     gBestKey = particle.x.join("")
 
-    
+
     let counter = 0
     // Termination clause should the pseudo-convergance termination clause not catch
     while (counter < 1000) {
@@ -88,12 +89,12 @@ function psoMain(etxt, numParticles) {
                 gBestFitness = fitness
                 updateGBest(particleLst, particle)
             }
-            
+
             // Checking to see if the current key beats the particle's previous best key
             if (fitness < findFitness(decrypt(etxt, particle.pBest))) {
                 particle.pBest = particle.x.join("")
             }
-            
+
             // Update the velocity and position respectively after the fitness has been tested
             updateVelocity(particle, gBestKey.split(""), particle.pBest.split(""))
             updatePosition(particle)
