@@ -4,7 +4,8 @@
   "description": "vigenere cipher",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "dddos": "^0.1.2",
     "express": "^4.16.2",
     "helmet": "^3.15.0",
+    "mocha": "^5.2.0",
     "serve-favicon": "~2.3.0",
     "socket.io": "^2.1.1",
     "threads": "^0.12.0"
