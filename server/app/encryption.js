@@ -1,4 +1,5 @@
 "use strict"
+
 // Function used to encrypt plaintext file using the provided key
 function encrypt(ptxt, key) {
     //Create a variable responsible for storing the encrypted text

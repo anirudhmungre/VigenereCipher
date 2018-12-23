@@ -1,16 +1,14 @@
 "use strict"
-let {decrypt} = require('./decryption'),
-    {findMonogramSum} = require('./monogram'),
-    {findBigramSum} = require('./bigrams'),
-    particles = require('./initializePso'),
-    friedman = require('./friedman')
+const {decrypt} = require(__dirname + '/decryption'),
+    {findMonogramSum} = require(__dirname + '/monogram'),
+    {findBigramSum} = require(__dirname + '/bigrams'),
+    particles = require(__dirname + '/initializePso'),
+    friedman = require(__dirname + '/friedman')
 
 // Finds the fitness value of the particular key value through the decrypted text
 // Accomplishes this by leveraging the use of Monogram.js and Bigram.js respectively
 function findFitness(dtxt) {
-    let mSum = findMonogramSum(dtxt, 0.23),
-        bSum = findBigramSum(dtxt, .77)
-    return mSum + bSum
+    return findMonogramSum(dtxt, 0.23) + findBigramSum(dtxt, .77)
 }
 
 // Allows for the subtraction of two characters, allowing for overflow wraparound using modulus
@@ -23,7 +21,7 @@ function updateVelocity(particle, gBestKey, pBest) {
     for (let i = 0; i < particle.v.length; i++) {
         particle.rand1 = Math.random() * (1 - 0) + 0
         particle.rand2 = Math.random() * (1 - 0) + 0
-        particle.v[i] = (Math.floor(particle.w * particle.v[i] + (particle.c1 * particle.r1 * (subtractChar(pBest[i], particle.x[i]))) + (particle.c2 * particle.r2 * (subtractChar(gBestKey[i], particle.x[i])))) % 26)
+        particle.v[i] = Math.floor(particle.w * particle.v[i] + (particle.c1 * particle.r1 * (subtractChar(pBest[i], particle.x[i]))) + (particle.c2 * particle.r2 * (subtractChar(gBestKey[i], particle.x[i])))) % 26
     }
 }
 
@@ -37,16 +35,15 @@ function updatePosition(particle) {
             xp[i] = String.fromCharCode((((xp[i].charCodeAt(0) - 65) + vel[i] + 26) % 26) + 65)
         } else {
             xp[i] = String.fromCharCode(((xp[i].charCodeAt(0) - 65) + vel[i]) % 26 + 65)
-
         }
     }
 }
 
 // Updates the global best particle list with the passed new global best particle
 function updateGBest(particleLst, gBestNew) {
-    for (let i = 0; i < particleLst.length; i++) {
-        particleLst[i].gBest = gBestNew
-    }
+    particleLst.forEach(function (particle) {
+        particle.gBest = gBestNew
+    })
 }
 
 // Main driver function responsible for running the PSO algorithm.
@@ -54,8 +51,8 @@ function updateGBest(particleLst, gBestNew) {
 function psoMain(etxt, numParticles) {
     // Initialization of variables, including generation of particle list
     let particleLst = particles.generateParticles(numParticles, friedman.getEstKeyLen(etxt)[0]),
-        gBestFitness = 100,
-        gBestKey = "",
+        gBestFitness,
+        gBestKey,
         prevBest = "",
         tCounter = 0
 
@@ -67,16 +64,14 @@ function psoMain(etxt, numParticles) {
     gBestFitness = findFitness(dtxt)
     gBestKey = particle.x.join("")
 
-    
+
     let counter = 0
     // Termination clause should the pseudo-convergance termination clause not catch
     while (counter < 1000) {
         // Drives through the list of the particles on each iteration
-        for (let j = 0; j < particleLst.length; j++) {
+        particleLst.forEach(function (particle) {
             // Initializes the specific particle being looked at in this iteration
-            let particle = particleLst[j],
-                dtxt = "",
-                fitness
+            let dtxt, fitness
 
             // Decrypts the encrypted text using the particle's current key and find's its fitness value
             dtxt = decrypt(etxt, particle.x.join(""))
@@ -88,16 +83,16 @@ function psoMain(etxt, numParticles) {
                 gBestFitness = fitness
                 updateGBest(particleLst, particle)
             }
-            
+
             // Checking to see if the current key beats the particle's previous best key
             if (fitness < findFitness(decrypt(etxt, particle.pBest))) {
                 particle.pBest = particle.x.join("")
             }
-            
+
             // Update the velocity and position respectively after the fitness has been tested
             updateVelocity(particle, gBestKey.split(""), particle.pBest.split(""))
             updatePosition(particle)
-        }
+        })
 
         // Pseudo-convergance clause if the global best key doesn't change for 50 * keyLength iterations of the while loop
         if (prevBest === gBestKey) {
@@ -111,7 +106,6 @@ function psoMain(etxt, numParticles) {
         ++counter
         prevBest = gBestKey
     }
-
     return gBestKey
 }
 

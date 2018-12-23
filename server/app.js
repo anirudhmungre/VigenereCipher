@@ -1,55 +1,63 @@
 "use strict"
+// Socket port
 const SOCKET_PORT = 3770
+// Requires
 const Express = require("express")
 const SocketIO = require('socket.io')
 const spawn = require('threads').spawn
-const socket_app = Express()
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const DDoS = require('dddos')
 const {cors} = require('./app/components/cors')
 const base64 = require('base64url')
+
+// Start express server
+const socket_app = Express()
 const socket_http = require('http').Server(socket_app)
-//Include Local API route
+
+// Include encrypt/decrypt functions
 const {encrypt} = require('./app/encryption')
 const {decrypt} = require('./app/decryption')
 
+// String prototype for regex stripping
 String.prototype.strip = function () {
     return this.replace(/[^a-zA-Z]/g, "").toUpperCase()
 }
-
+// String prototype for returning 300 chars
 String.prototype.smart = function () {
     return (this.length > 300 ? this.substring(0, 301) : this)
 }
 
-// Server setup
-socket_app.use(cors())
+// API middleware
+socket_app.use(cors()) // enable cors on api reqs
 socket_app.use(new DDoS({
     maxWeight: 5,
     errorData: {
         "response": 429,
         "message": "GEEZ, that\'s a few too many requests... slow down."
     }
-}).express())
-socket_app.use(helmet()) // Basic NODE security suite
+}).express()) // Block DDOS
+socket_app.use(helmet()) // Basic Express security suite
 socket_app.use(bodyParser.json({
     limit: '512mb'
-})) // Max size of body
+})) // extend json body limit
 socket_app.use(bodyParser.urlencoded({
     limit: '512mb',
     extended: true
-})) // Max size of body
-socket_app.set("port", SOCKET_PORT) // Server uses port
+})) // extend url encode body limit
+socket_app.set("port", SOCKET_PORT) // Bind server to port
 
+// Basic JSON response for the root
 socket_app.get('/', (req, res) => {
     res.json({msg: "HELLO"})
 })
 
+// Encryption wrapper for input from socket
 const socket_encrypt = (plainText, key) => {
     key = key.strip()
     plainText = plainText.strip()
     let start_time = new Date().getTime()
-    let encrypted = encrypt(plainText, key) // This is a blocking function
+    let encrypted = encrypt(plainText, key)
     return {
         plainText: plainText,
         enc: encrypted,
@@ -58,6 +66,7 @@ const socket_encrypt = (plainText, key) => {
     }
 }
 
+// Decryption wrapper for input from socket
 const socket_decrypt = (encryptedText, key) => {
     key = key.strip()
     encryptedText = encryptedText.strip()
@@ -71,22 +80,14 @@ const socket_decrypt = (encryptedText, key) => {
     }
 }
 
-const socket_thread_bruteforce = (socket, encryptedText, callback) => {
-    encryptedText = encryptedText.strip()
-    let start_time = new Date().getTime()
-    const thread = spawn('./app/bruteForce.js')
+// wrapper for creating threads async
+const create_thread = (socket, spawnFile, sendData, callback) => {
+    const thread = spawn(spawnFile)
     socket.runningThreads.push(thread)
     thread
-        .send({
-            enc: encryptedText.smart()
-        })
+        .send(sendData)
         .on('message', function (response) {
-            callback(
-                decrypt(encryptedText, response.key),
-                encryptedText,
-                response.key,
-                (new Date().getTime()) - start_time
-            ) // (plaintext, encryptedText, key, runtime)
+            callback(response)
             thread.kill()
         })
         .on('error', function (error) {
@@ -98,52 +99,58 @@ const socket_thread_bruteforce = (socket, encryptedText, callback) => {
         })
 }
 
+// Async thread creation for brute force to avoid blocking event loop
+const socket_thread_bruteforce = (socket, encryptedText, callback) => {
+    encryptedText = encryptedText.strip()
+    let start_time = new Date().getTime()
+    create_thread(socket, './app/bruteForce.js', {enc: encryptedText.smart()}, function (response) {
+        callback(
+            decrypt(encryptedText, response.key),
+            encryptedText,
+            response.key,
+            (new Date().getTime()) - start_time
+        )
+    })
+}
+
+// Async thread creation for pso to avoid blocking event loop
 const socket_thread_pso = (socket, encryptedText, callback) => {
     encryptedText = encryptedText.strip()
     let start_time = new Date().getTime()
-    const thread = spawn('./app/pso.js')
-    socket.runningThreads.push(thread)
-    thread
-        .send({
-            enc: encryptedText.smart()
-        })
-        .on('message', function (response) {
-            callback(
-                decrypt(encryptedText, response.key),
-                encryptedText,
-                response.key,
-                (new Date().getTime()) - start_time
-            ) // (plaintext, encryptedText, key, runtime)
-            thread.kill()
-        })
-        .on('error', function (error) {
-            console.error('Worker errored:', error)
-            thread.kill()
-        })
-        .on('exit', function () {
-            console.log('Worker has been terminated.')
-        })
+    create_thread(socket, './app/pso.js', {enc: encryptedText.smart()}, function (response) {
+        callback(
+            decrypt(encryptedText, response.key),
+            encryptedText,
+            response.key,
+            (new Date().getTime()) - start_time
+        )
+    })
 }
 
 // Start server and listen on port
 try {
-    const socket_server = socket_http.listen(SOCKET_PORT)
-    const io = SocketIO(socket_server) // open socket on server port
-    io.origins('*:*')
-    io.on('connection', (socket) => { // Socket connection
-        socket.runningThreads = []
-        console.log(`New Connection: ${socket.id}`)
-        socket.on('disconnect', () => {
+    const socket_server = socket_http.listen(SOCKET_PORT) // Open server on SOCKET_PORT
+    const io = SocketIO(socket_server) // set socket io to listen
+    io.origins('*:*') // Allow cors with socket io
+    io.on('connection', (socket) => { // Main io connection event
+        socket.runningThreads = [] // Array of running threads to kill on exit
+        console.log(`New Connection: ${socket.id}`) // Logging for connection
+        socket.on('disconnect', () => { // Disconnect event
+            socket.runningThreads.forEach(th => {
+                th.kill()
+            })
+            socket.runningThreads = []
             console.log(`Disconnect: ${socket.id}`)
         })
+        // Handle page change during running pso/brute
         socket.on('STOP_ALL_PROCESS', () => {
             socket.runningThreads.forEach(th => {
                 th.kill()
-                console.log(`Killing thread: ${th}`)
             })
             socket.runningThreads = []
             console.log(`STOP`)
         })
+        // Events below define functionality for each page of the app
         socket.on('ENCRYPT_BY_TEXT', (data) => {
             socket.emit("RESULT_ENCRYPT_BY_TEXT",
                 socket_encrypt(data.plainText, data.key)
@@ -209,8 +216,11 @@ try {
                 })
         })
     })
+    // Logging when server is started
     console.log(`SOCKET SERVER Listening on port: ${SOCKET_PORT}`)
 } catch (e) {
-    // Oh No! Something went wrong!
+    // General logging for error handling
     console.error(`\n\n[ERROR] An Error has occurred:\n${e}`)
 }
+
+// EOF

@@ -1,4 +1,4 @@
-const PROD = false
+const PROD = true
 
 import Vue from 'vue'
 import './plugins/vuetify'

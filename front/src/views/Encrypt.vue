@@ -18,20 +18,10 @@
                             <v-card flat>
                                 <v-card-text>
                                     <v-form v-model="textEncryptValid">
-                                        <v-textarea
-                                                :rules="textEncryptTextRules"
-                                                box
-                                                label="Text to Encrypt"
-                                                prepend-icon='text_format'
-                                                v-model="textEncryptText"
-                                        ></v-textarea>
-                                        <v-text-field
-                                                :rules="textEncryptKeyRules"
-                                                box
-                                                label="Key"
-                                                prepend-icon='vpn_key'
-                                                v-model="textEncryptKey"
-                                        ></v-text-field>
+                                        <v-textarea :rules="textEncryptTextRules" box label="Text to Encrypt"
+                                                    prepend-icon='text_format' v-model="textEncryptText"></v-textarea>
+                                        <v-text-field :rules="textEncryptKeyRules" box label="Key"
+                                                      prepend-icon='vpn_key' v-model="textEncryptKey"></v-text-field>
                                         <v-btn @click="socketEncryptByText" block color="primary" large>Encrypt</v-btn>
                                     </v-form>
                                     <v-progress-linear :indeterminate="true"
@@ -46,20 +36,10 @@
                                         <v-text-field :rules="fileEncryptFileRules" @click='pickFile' box
                                                       label="Select File" prepend-icon='attach_file'
                                                       v-model='fileName'></v-text-field>
-                                        <input
-                                                @change="onFilePicked"
-                                                accept=".txt"
-                                                ref="image"
-                                                style="display: none"
-                                                type="file"
-                                        >
-                                        <v-text-field
-                                                :rules="fileEncryptKeyRules"
-                                                box
-                                                label="Key"
-                                                prepend-icon='vpn_key'
-                                                v-model="fileEncryptKey"
-                                        ></v-text-field>
+                                        <input @change="onFilePicked" accept=".txt" ref="image" style="display: none"
+                                               type="file">
+                                        <v-text-field :rules="fileEncryptKeyRules" box label="Key"
+                                                      prepend-icon='vpn_key' v-model="fileEncryptKey"></v-text-field>
                                         <v-btn @click="socketEncryptByFile" block color="primary" large>Encrypt</v-btn>
                                     </v-form>
                                     <v-progress-linear :indeterminate="true"
@@ -78,19 +58,9 @@
                 </v-card-title>
                 <v-card-text>
                     <v-form>
-                        <v-textarea
-                                box
-                                label="Encrypted Text"
-                                readonly
-                                v-model="encryptedText"
-                        ></v-textarea>
-                        <v-text-field
-                                box
-                                label="Runtime"
-                                readonly
-                                suffix="miliseconds"
-                                v-model="runtime"
-                        ></v-text-field>
+                        <v-textarea box label="Encrypted Text" readonly v-model="encryptedText"></v-textarea>
+                        <v-text-field box label="Runtime" readonly suffix="miliseconds"
+                                      v-model="runtime"></v-text-field>
                     </v-form>
                 </v-card-text>
             </v-card>
@@ -105,35 +75,22 @@
         name: 'Encrypt',
         data: () => ({
             socket: null,
-
             showEncrypted: false,
-
             textEncryptValid: false,
             textEncryptText: '',
-            textEncryptTextRules: [
-                v => !!v || 'Text is required',
-            ],
+            textEncryptTextRules: [v => !!v || 'Text is required'],
             textEncryptKey: '',
-            textEncryptKeyRules: [
-                v => !!v || 'Key is required',
-            ],
+            textEncryptKeyRules: [v => !!v || 'Key is required'],
             encryptByTextLoading: false,
-
             fileEncryptValid: false,
             fileEncryptFile: '',
-            fileEncryptFileRules: [
-                v => !!v || 'File is required',
-            ],
+            fileEncryptFileRules: [v => !!v || 'File is required'],
             fileEncryptKey: '',
-            fileEncryptKeyRules: [
-                v => !!v || 'Key is required',
-            ],
+            fileEncryptKeyRules: [v => !!v || 'Key is required'],
             encryptByFileLoading: false,
-
             tab: null,
             fileName: '',
             fileUrl: '',
-
             encryptedText: '',
             runtime: ''
         }),
