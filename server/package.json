@@ -20,6 +20,7 @@
   "dependencies": {
     "base64url": "^3.0.1",
     "body-parser": "~1.15.2",
+    "chalk": "^2.4.1",
     "compression": "^1.7.3",
     "dddos": "^0.1.2",
     "express": "^4.16.2",

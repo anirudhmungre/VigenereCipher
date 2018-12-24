@@ -103,7 +103,7 @@ const create_thread = (socket, spawnFile, sendData, callback) => {
 const socket_thread_bruteforce = (socket, encryptedText, callback) => {
     encryptedText = encryptedText.strip()
     let start_time = new Date().getTime()
-    create_thread(socket, './app/bruteForce.js', {enc: encryptedText.smart()}, function (response) {
+    create_thread(socket, './app/bruteForce_thread.js', {enc: encryptedText.smart()}, function (response) {
         callback(
             decrypt(encryptedText, response.key),
             encryptedText,
@@ -117,7 +117,7 @@ const socket_thread_bruteforce = (socket, encryptedText, callback) => {
 const socket_thread_pso = (socket, encryptedText, callback) => {
     encryptedText = encryptedText.strip()
     let start_time = new Date().getTime()
-    create_thread(socket, './app/pso.js', {enc: encryptedText.smart()}, function (response) {
+    create_thread(socket, './app/pso_thread.js', {enc: encryptedText.smart()}, function (response) {
         callback(
             decrypt(encryptedText, response.key),
             encryptedText,
