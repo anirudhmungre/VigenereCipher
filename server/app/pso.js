@@ -48,7 +48,7 @@ function updateGBest(particleLst, gBestNew) {
 
 // Main driver function responsible for running the PSO algorithm.
 // Takes in the encrypted text and number of particles; Returns the suggested key
-function psoMain(etxt, numParticles) {
+function psoMain(etxt, numParticles = 100) {
     // Initialization of variables, including generation of particle list
     let particleLst = particles.generateParticles(numParticles, friedman.getEstKeyLen(etxt)[0]),
         gBestFitness,
@@ -131,6 +131,4 @@ function psoMain(etxt, numParticles) {
 // 8-Letter Key Encrypted Text (Cinnamon) [400 Chars]
 // VPVFSFFVPOVFAEOZRTRGEEHPCARBFECZGBUVNSHUCBJBUXRBVPREWUGRDMNAEZQEAXGRDICEFQANNKCGJMEYAZUHCORGHQSAITVFHXOAICNTEUGNXMEFAFWYGIAQRAPHUBYNNSINIMPNPMPYGWSZAZMQKNSRRQBGVPVAGECAGEBHLPBBVMKCEOHGQJRGHQQNUMFHCTOFVPVFWQQNPWOFEDJRVPNGTTWFUPBHLPWAEZRNSQHUGZNGENMJJQPUTTSPKXURROOAFMGRCFHUGSRLTTSDWQPXBDCJPNBKJGACGLFJIRHYAWIRRFVRDZNADZSJEIABEFVNVBURPXIZDMEUAPPBWOUGTTSQCGORFAFRYQGUMABRANEBMTWFYQSRSTSUCLJBRWSQJIEQFAFVV
 
-module.exports = function (input, done) {
-    done({key: psoMain(input.enc, 100)})
-}
+exports.psoMain = psoMain

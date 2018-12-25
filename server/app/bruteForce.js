@@ -50,6 +50,4 @@ const bruteForce = (etxt) => {
     }
 }
 
-module.exports = function (input, done) {
-    done({key: bruteForce(input.enc)}) // Provide found key to front end for decryption and results in UI
-}
+exports.bruteForce = bruteForce
