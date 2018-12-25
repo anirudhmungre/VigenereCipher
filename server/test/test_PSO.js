@@ -40,14 +40,18 @@ const testCases = [
 const allocatedThreads = []
 
 const createWorkerThreadPool = () => {
-    const pool = new WorkerNodes(resolvePath('pso_thread_pool'), {lazyStart: true, autoStart: true, maxWorkers: 1})
+    const pool = new WorkerNodes(resolvePath('pso_thread_pool'), {
+        lazyStart: true,
+        autoStart: true,
+        maxWorkers: 4
+    })
     allocatedThreads.push(pool)
     return pool
 }
 
 const main = () => {
-    const currentTest = 0
-    const testCount = 10
+    const currentTest = 3
+    const testCount = 100
 
     let threadPool = createWorkerThreadPool()
     for (let i = 0; i < testCount; i++) {
