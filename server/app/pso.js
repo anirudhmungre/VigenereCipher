@@ -15,7 +15,6 @@ function psoMain(etxt, numParticles = 100) {
         sameBest = 0
 
     let keyLen = friedman.getEstKeyLen(etxt)[0]
-    console.log(keyLen)
     for (let i = 0; i < numParticles; i++) {
         particles.push(new Particle(keyLen))
     }
