@@ -1,11 +1,12 @@
 "use strict"
-const { decrypt } = require(__dirname + '/decryption'),
+const {decrypt} = require(__dirname + '/decryption'),
     friedman = require(__dirname + '/friedman'),
     Particle = require(__dirname + '/particle')
 
 // Main driver function responsible for running the PSO algorithm.
 // Takes in the encrypted text and number of particles; Returns the suggested key
 function psoMain(etxt, numParticles = 100) {
+    // console.log(friedman.getEstKeyLen(etxt)[0])
     // Initialization of variables, including generation of particle list
     let particles = [],
         gBestFitness,
@@ -14,8 +15,7 @@ function psoMain(etxt, numParticles = 100) {
         sameBest = 0
 
     let keyLen = friedman.getEstKeyLen(etxt)[0]
-    console.log(keyLen)
-    for (let i = 0; i < numParticles; i++){
+    for (let i = 0; i < numParticles; i++) {
         particles.push(new Particle(keyLen))
     }
 
@@ -30,13 +30,12 @@ function psoMain(etxt, numParticles = 100) {
     for (let i = 0; i < iterations; i++) {
         prevBest = gBestKey
         // Drives through the list of the particles on each iteration
-        particles.forEach(function (particle) {
+        particles.forEach(particle => {
             // Initializes the specific particle being looked at in this iteration
-            let dtxt,
-                testKey = particle.x.join("")
+            const testKey = particle.x.join("")
 
             // Decrypts the encrypted text using the particle's current key and find's its fitness value
-            dtxt = decrypt(etxt, testKey)
+            let dtxt = decrypt(etxt, testKey)
             particle.findFitness(dtxt)
 
             // Checking to see if the particle's current key beats the global best key
@@ -60,13 +59,13 @@ function psoMain(etxt, numParticles = 100) {
         // Update all particles after calculations for globals
         particles.forEach(particle => {
             particle.update(gBestKey.split(""))
-        }) 
+        })
     }
     return gBestKey
 }
 
 // console.time("pso")
-// console.log(psoMain("IOIKWIYIFKXZAKEBWLWXTZTUEHLOXWDTELLXUGLLPAWGYAKOLLTYWAWTIESRTUCJCEAEVADYDARPUYGXWLRDECNUSKTAHWICNLAWWSAFKJHGWMHHVWVHHTAPTHNVVDIUKXAHNYYPNEUEEHBDIDMMSRNKIXJTYEFXIOIFKHVNWADBLVRDAEPTTJTLSQLTZIRHSWWJJHSW") )
+// console.log(psoMain("VPVFSFFVPOVFAEOZRTRGEEHPCARBFECZGBUVNSHUCBJBUXRBVPREWUGRDMNAEZQEAXGRDICEFQANNKCGJMEYAZUHCORGHQSAITVFHXOAICNTEUGNXMEFAFWYGIAQRAPHUBYNNSINIMPNPMPYGWSZAZMQKNSRRQBGVPVAGECAGEBHLPBBVMKCEOHGQJRGHQQNUMFHCTOFVPVFWQQNPWOFEDJRVPNGTTWFUPBHLPWAEZRNSQHUGZNGENMJJQPUTTSPKXURROOAFMGRCFHUGSRLTTSDWQPXBDCJPNBKJGACGLFJIRHYAWIRRFVRDZNADZSJEIABEFVNVBURPXIZDMEUAPPBWOUGTTSQCGORFAFRYQGUMABRANEBMTWFYQSRSTSUCLJBRWSQJIEQFAFVV") )
 // console.timeEnd("pso")
 
 // 2-Letter Key Encrypted Text (Hi) [100 Chars]
