@@ -1,5 +1,5 @@
 class Particle{
-    constructor(keySize){
+    constructor(keyLen){
         this.c1 = 2.05
         this.c2 = 2.05
         this.w = 0.9
@@ -9,11 +9,15 @@ class Particle{
         this.r2 = Math.random() * (1 - 0) + 0
         this.gBest = {}
 
-        for (let i = 0; i < keySize; i++){
+        for (let i = 0; i < keyLen; i++){
             this.x.push(String.fromCharCode(Math.floor(Math.random() * (25 - 0 + 1)) + 65))
             this.v.push(Math.floor(26 * (Math.random() * (1 - 0) + 0)))
         }
 
         this.pBest = this.x.join("")
+    }
+    
+    findFitness(dtxt) {
+        return findMonogramSum(dtxt, 0.23) + findBigramSum(dtxt, .77)
     }
 }
