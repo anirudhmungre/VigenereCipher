@@ -49,6 +49,7 @@ function updateGBest(particleLst, gBestNew) {
 // Main driver function responsible for running the PSO algorithm.
 // Takes in the encrypted text and number of particles; Returns the suggested key
 function psoMain(etxt, numParticles = 100) {
+    // console.log(friedman.getEstKeyLen(etxt)[0])
     // Initialization of variables, including generation of particle list
     let particleLst = particles.generateParticles(numParticles, friedman.getEstKeyLen(etxt)[0]),
         gBestFitness,
