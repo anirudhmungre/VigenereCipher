@@ -1,5 +1,5 @@
 'use strict'
-const currentTest = 4
+const currentTest = 3
 const testCount = 100
 
 const WorkerNodes = require('worker-nodes')
@@ -27,7 +27,7 @@ const testCases = [
     {correctKey: 'MOP'},
     {correctKey: 'MOAT'},
     {correctKey: 'MEALS'},
-    {correctKey: 'MAJORS'},
+    {correctKey: 'MAPPED'},
     {correctKey: 'MACHINE'},
     {correctKey: 'MAGAZINE'},
     {correctKey: 'MISMARKED'},
@@ -41,7 +41,7 @@ const testCases = [
 
 const allocatedThreads = []
 const createWorkerThreadPool = () => {
-    const pool = new WorkerNodes(resolvePath('pso_thread_pool'), {
+    const pool = new WorkerNodes(resolvePath('bruteforce_thread_pool'), {
         lazyStart: true,
         autoStart: true,
         maxWorkers: 10
@@ -121,7 +121,7 @@ const iterationComplete = (data) => {
 const main = () => {
     let threadPool = createWorkerThreadPool()
     for (let i = 0; i < testCount; i++) {
-        threadPool.call.pso(encrypt(plaintext, testCases[currentTest].correctKey))
+        threadPool.call.bruteForce(encrypt(plaintext, testCases[currentTest].correctKey))
             .then(msg => iterationComplete(msg))
             .catch(err => console.error(err))
     }

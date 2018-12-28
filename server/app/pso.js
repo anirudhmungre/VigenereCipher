@@ -1,11 +1,12 @@
 "use strict"
-const { decrypt } = require(__dirname + '/decryption'),
+const {decrypt} = require(__dirname + '/decryption'),
     friedman = require(__dirname + '/friedman'),
     Particle = require(__dirname + '/particle')
 
 // Main driver function responsible for running the PSO algorithm.
 // Takes in the encrypted text and number of particles; Returns the suggested key
 function psoMain(etxt, numParticles = 100) {
+    // console.log(friedman.getEstKeyLen(etxt)[0])
     // Initialization of variables, including generation of particle list
     let particles = [],
         gBestFitness,
@@ -15,7 +16,7 @@ function psoMain(etxt, numParticles = 100) {
 
     let keyLen = friedman.getEstKeyLen(etxt)[0]
     console.log(keyLen)
-    for (let i = 0; i < numParticles; i++){
+    for (let i = 0; i < numParticles; i++) {
         particles.push(new Particle(keyLen))
     }
 
