@@ -9,7 +9,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 Vue.config.productionTip = false
 
-Vue.prototype.$socketPath = (PROD ? `sofe3770api.tk` : `localhost:3770`)
+Vue.prototype.$socketPath = (PROD ? `api.sofe3770.tk` : `localhost:3770`)
 
 new Vue({
     router,
