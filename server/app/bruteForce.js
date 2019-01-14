@@ -29,25 +29,28 @@ const checkDec = (dtxt) => {
 }
 
 const bruteForce = (etxt) => {
-    let dtxt, testKey, kLen, start, freq
+    let dtxt, testKey, start, freq, lowest, bestKey
     const LETARR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("") // Create an alphabet array possible key letters
-    const KEYLENS = fried.getEstKeyLen(etxt) // Use the friedman analysis to get an array of possible key lengths
-    for (let i = 0; i < KEYLENS.length; i++) { // Cycles through all possible key lengths
-        kLen = KEYLENS[i] // Sets each key length to a variable
-        start = 0 // Creates a starting variable to count through keys
-        for (let j = kLen - 1; j >= 0; j--) {
-            start += 26 ** j // Create the starting key lengths first decimal number base 10
-        }
-        testKey = "A".repeat(kLen) // Initialize the first test key as a string of all "A"
-        for (let j = start + 1; testKey.length == kLen; j++) { // Cycle through all keys in the specified key length
-            dtxt = decrypt.decrypt(etxt, testKey) // Store string to check if decrypted from possible key
-            freq = checkDec(dtxt) // Check the monogram and bigram frequency analysis of the decrypted text
-            if (freq < 0.5 && freq > 0) { // Termination clause if frequency < 50% found to be most useful from trial and error
-                return testKey // If termination clause is correct return the testKey as the answer
-            }
-            testKey = toString26(j, LETARR) // Change decimal number to base 26 letter number as pseudo key
-        }
+    const KEYLEN = fried.getEstKeyLen(etxt)[0] // Use the friedman analysis to get an array of possible key lengths
+    start = 0 // Creates a starting variable to count through keys
+    for (let j = KEYLEN - 1; j >= 0; j--) {
+        start += 26 ** j // Create the starting key lengths first decimal number base 10
     }
+    testKey = "A".repeat(KEYLEN) // Initialize the first test key as a string of all "A"
+    lowest = Infinity
+    bestKey = testKey
+    for (let j = start + 1; testKey.length == KEYLEN; j++) { // Cycle through all keys in the specified key length
+        dtxt = decrypt.decrypt(etxt, testKey) // Store string to check if decrypted from possible key
+        freq = checkDec(dtxt) // Check the monogram and bigram frequency analysis of the decrypted text
+        if (freq < lowest) { 
+            bestKey = testKey
+            lowest = freq
+        }
+        testKey = toString26(j, LETARR) // Change decimal number to base 26 letter number as pseudo key
+    }
+    return bestKey
 }
+
+// console.log(bruteForce("VHBUSMTIGIILCVPVFSFFVPOVFAEOZRTRGEEHPCARBFECZGBUVNSHUCBJBUXRBVPREWUGRDMNAEZQEAXGRDICEFQANNKCGJMEYAZUHCORGHQSAITVFHXOAICNTEUGNXMEFAFWYGIAQRAPHUBYNNSINIMPNPMPYGWSZAZMQKNSRRQBGVPVAGECAGEBHLPBBVMKCEOHGQJRGHQQNUMFHCTOFVPVFWQQNPWOFEDJRVPNGTTWFUPBHLPWAEZRNSQHUGZNGENMJJQPUTTSPKXURROOAFMGRCFHUGSRLTTSDWQPXBDCJPNBKJGACGLFJIRHYAWIRRFVRDZNADZSJEIABEFVNVBURPXIZDMEUAPPBWOUGTTSQCGORFAFRYQGUMABRANEBMTWFYQSRSTSUCLJBRWSQJIEQFAFVVSTOPEGTXUTVCSXQFLQMXVHBPGMJAMYONNDHVHXTWBUEUGAGGNVTYIVEWYOKFIGCNRQTAGRECNZWAZGTAGEGILBUHECNZWAZGILCVXTSTVIEGAGFRHDULVLTPGNCGXEAICBEGOYCLE") )
 
 exports.bruteForce = bruteForce
